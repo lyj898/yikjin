@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yik Jin builds things — Yik Jin Low</title>
+<meta name="description" content="Small apps, odd tools and the occasional website by Yik Jin Low, built with a lot of help from AI.">
+<link rel="canonical" href="https://yikjin.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yik Jin builds things">
+<meta property="og:description" content="Small apps, odd tools and the occasional website, built with a lot of help from AI.">
+<meta property="og:url" content="https://yikjin.com/">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#121418">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "url": "https://yikjin.com/",
+  "name": "Yik Jin builds things",
+  "about": {
+    "@type": "Person",
+    "@id": "https://lowyikjin.com/#person",
+    "name": "Low Yik Jin",
+    "alternateName": ["Yik Jin Low", "Alex Low", "Alex Low Yik Jin"],
+    "url": "https://lowyikjin.com/",
+    "sameAs": ["https://lowyikjin.com/", "https://alexlowyikjin.com/", "https://www.athlinks.com/athletes/592841440"]
+  }
+}
+</script>
+<style>
+:root{
+  --bg:#f6f6f3; --card:#ffffff; --ink:#121418; --body:#30343d; --muted:#5a606c; --line:#e3e4e8;
+  --accent:#e8590c; --accent-ink:#b8430a;
+  --t-run:#ffe8d9; --t-ai:#e1e9ff; --t-eng:#ece4ff; --t-stay:#dcf3ee; --t-calm:#e5f4dc; --t-old:#ececea;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#101216; --card:#181b21; --ink:#f1f2f4; --body:#c9ccd3; --muted:#9aa0ab; --line:#2a2e36;
+    --accent:#ff7a33; --accent-ink:#ff9a62;
+    --t-run:#3a2516; --t-ai:#1d2742; --t-eng:#2a2140; --t-stay:#16302b; --t-calm:#1f2e19; --t-old:#25272b;
+    color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+html{background:var(--bg)}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif; font-size:18px; line-height:1.55; -webkit-font-smoothing:antialiased}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:6px}
+.mono{font-family:"JetBrains Mono", ui-monospace, monospace}
+.wrap{max-width:1140px; margin:0 auto; padding:28px 32px 64px}
+header{display:flex; justify-content:space-between; align-items:center; gap:16px}
+.mark{display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; border-radius:13px; background:var(--ink); color:var(--bg); font-weight:800; text-decoration:none; letter-spacing:-0.02em}
+header nav{display:flex; gap:24px; font-weight:600; font-size:16px}
+header nav a{text-decoration:none; padding:10px 0; border-bottom:2px solid transparent}
+header nav a:hover{border-bottom-color:var(--accent)}
+.hero{padding:96px 0 40px}
+.hero h1{margin:0; font-size:clamp(3.4rem, 10vw, 8.2rem); line-height:.88; letter-spacing:-0.05em; font-weight:800}
+.hero h1 span{color:var(--accent)}
+.hero p{margin:30px 0 0; max-width:620px; font-size:24px; line-height:1.4; color:var(--body)}
+.ls{margin:36px 0 0; padding:16px 20px; border-radius:14px; background:var(--ink); color:var(--bg); font-size:15px; overflow-x:auto; white-space:nowrap}
+.ls .p{color:var(--accent)}
+.ls .dim{opacity:.6}
+.bench-head{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:12px; margin:88px 0 26px}
+.bench-head h2{margin:0; font-size:44px; letter-spacing:-0.035em; line-height:1}
+.legend{display:flex; gap:18px; font-size:13px; color:var(--muted)}
+.dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:1px}
+.live{background:#16a34a} .tinker{background:var(--accent)} .retired{background:#9aa0ab}
+.grid{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:20px}
+.card{grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:22px; overflow:hidden; display:flex; flex-direction:column; transition:transform .18s ease, box-shadow .18s ease}
+.card:hover{transform:translateY(-3px); box-shadow:0 14px 34px rgba(18,20,24,.08)}
+.card.wide{grid-column:span 4}
+.card.half{grid-column:span 3}
+.art{height:150px; display:flex; align-items:center; justify-content:center; color:var(--ink)}
+.art svg{width:92px; height:92px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+.card.wide .art{height:170px}
+.inner{padding:22px 24px 24px; display:flex; flex-direction:column; gap:10px; flex:1}
+.tag{font-size:12px; color:var(--muted)}
+.card h3{margin:0; font-size:30px; line-height:1.02; letter-spacing:-0.03em}
+.card p{margin:0; color:var(--body); font-size:16.5px}
+.visit{align-self:flex-start; font-weight:600; font-size:15px; text-decoration:none; border-bottom:2px solid var(--accent); padding-bottom:1px}
+.lesson{margin-top:auto; padding-top:16px; border-top:1px dashed var(--line)}
+.lesson b{display:block; font:600 11px "JetBrains Mono", monospace; letter-spacing:.06em; color:var(--muted); margin-bottom:4px}
+.lesson q{quotes:none; font-weight:600; font-size:17px; line-height:1.35; color:var(--ink)}
+.t-run{background:var(--t-run)} .t-ai{background:var(--t-ai)} .t-eng{background:var(--t-eng)} .t-stay{background:var(--t-stay)} .t-calm{background:var(--t-calm)} .t-old{background:var(--t-old)}
+.tools{margin:88px 0 0; display:grid; grid-template-columns:1fr 2fr; gap:32px; align-items:start}
+.tools h2{margin:0; font-size:44px; letter-spacing:-0.035em; line-height:1}
+.chips{display:flex; flex-wrap:wrap; gap:10px}
+.chips span{padding:10px 16px; border-radius:999px; border:1px solid var(--line); background:var(--card); font-size:16px; font-weight:600}
+.tools p{margin:16px 0 0; color:var(--muted); font-size:16px}
+.quote{margin:96px 0 0; padding:72px 56px; border-radius:28px; background:var(--ink); color:var(--bg)}
+.quote p{margin:0; font-size:clamp(2rem, 5vw, 3.6rem); line-height:1.04; letter-spacing:-0.04em; font-weight:800; max-width:920px}
+.quote p span{color:var(--accent)}
+footer{margin-top:56px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:15px; color:var(--muted)}
+footer a{color:var(--ink); text-underline-offset:.2em; text-decoration-color:var(--accent)}
+.ps{margin-top:22px; font-size:14px; color:var(--muted)}
+.ps a{color:var(--muted)}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr 1fr}
+  .card, .card.half{grid-column:span 1}
+  .card.wide{grid-column:span 2}
+  .tools{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .wrap{padding:22px 20px 56px}
+  .hero{padding-top:64px}
+  .grid{grid-template-columns:1fr}
+  .card, .card.half, .card.wide{grid-column:span 1}
+  .quote{padding:48px 28px}
+}
+@media (prefers-reduced-motion:reduce){ .card{transition:none} .card:hover{transform:none} }
+.exp-note{margin:-8px 0 26px; color:var(--muted); font-size:17px; max-width:640px}
+.mini-grid{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px}
+.mini{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:22px; display:flex; flex-direction:column; gap:10px; transition:transform .18s ease, box-shadow .18s ease}
+.mini:hover{transform:translateY(-3px); box-shadow:0 14px 34px rgba(18,20,24,.08)}
+.mini .ico{width:54px; height:54px; border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--ink)}
+.mini .ico svg{width:30px; height:30px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.mini h3{margin:4px 0 0; font-size:24px; line-height:1.05; letter-spacing:-0.025em}
+.mini p{margin:0; color:var(--body); font-size:15.5px}
+.fav{align-self:flex-start; font-size:11px; color:var(--accent-ink); border:1px solid var(--accent); border-radius:999px; padding:3px 9px}
+.actions{margin-top:auto; padding-top:8px; display:flex; flex-wrap:wrap; gap:8px}
+.btn{display:inline-flex; align-items:center; min-height:40px; padding:0 16px; border-radius:999px; font-weight:600; font-size:14px; text-decoration:none}
+.btn.play{background:var(--ink); color:var(--bg)}
+.btn.dl{border:1px solid var(--line); color:var(--ink)}
+.btn.dl:hover{border-color:var(--ink)}
+@media (max-width:900px){ .mini-grid{grid-template-columns:1fr 1fr} }
+@media (max-width:600px){ .mini-grid{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ .mini{transition:none} .mini:hover{transform:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="mark" href="#top" aria-label="Yik Jin Low, home">YJ</a>
+    <nav aria-label="Main"><a href="#bench">Builds</a><a href="#experiments">Experiments</a><a href="#tools">Tools</a></nav>
+  </header>
+
+  <section class="hero" id="top">
+    <h1>Yik Jin<br>builds <span>things.</span></h1>
+    <p>Small apps, odd tools and the occasional website, built with a lot of help from AI. Some are useful. Some are just fun.</p>
+    <div class="ls mono" aria-label="List of builds"><span class="p">~/builds $</span> ls &nbsp; run-sea &nbsp; hello-ai &nbsp; one-engine &nbsp; elitestay &nbsp; yours-calmly &nbsp; first-experiments &nbsp; <span class="dim">early-apps</span></div>
+  </section>
+
+  <section id="bench" aria-labelledby="bench-h">
+    <div class="bench-head">
+      <h2 id="bench-h">On the workbench</h2>
+      <div class="legend mono"><span><span class="dot live"></span>live</span><span><span class="dot tinker"></span>tinkering</span><span><span class="dot retired"></span>retired</span></div>
+    </div>
+
+    <div class="grid">
+      <article class="card wide">
+        <div class="art t-run" aria-hidden="true"><svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="40" ry="26"/><ellipse cx="50" cy="50" rx="28" ry="15"/><path d="M50 24v6M50 70v6"/><circle cx="78" cy="42" r="4" fill="currentColor"/></svg></div>
+        <div class="inner">
+          <span class="tag mono"><span class="dot live"></span>live · running × data</span>
+          <h3>Run SEA</h3>
+          <p>A calendar of road races across 10 Southeast Asian countries in the next 12 months, plus a lab that ranks your finish time against many others in the region. A data-driven approach to a passion.</p>
+          <a class="visit" href="https://runsea.run/">runsea.run</a>
+          <div class="lesson"><b>WHAT I LEARNED</b><q>A passion is just a dataset you haven&rsquo;t cleaned yet.</q></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="art t-ai" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M20 28h60a6 6 0 0 1 6 6v26a6 6 0 0 1-6 6H44l-14 12V66H20a6 6 0 0 1-6-6V34a6 6 0 0 1 6-6z"/><path d="M34 47h.01M50 47h.01M66 47h.01" stroke-width="6"/></svg></div>
+        <div class="inner">
+          <span class="tag mono"><span class="dot live"></span>live · for AI</span>
+          <h3>Hello, AI</h3>
+          <p>A page written for AI assistants, so they get the facts about me right. Humans welcome.</p>
+          <a class="visit" href="https://alexlowyikjin.com/">alexlowyikjin.com</a>
+          <div class="lesson"><b>WHAT I LEARNED</b><q>If you don&rsquo;t tell the machines who you are, they&rsquo;ll guess. Confidently.</q></div>
+        </div>
+      </article>
+
+      <article class="card half">
+        <div class="art t-eng" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 18 84 34 50 50 16 34z"/><path d="M16 50l34 16 34-16"/><path d="M16 66l34 16 34-16"/></svg></div>
+        <div class="inner">
+          <span class="tag mono"><span class="dot tinker"></span>tinkering · engine</span>
+          <h3>One engine, many sites</h3>
+          <p>A reusable engine that turns a list of places into a full directory site. Same engine, different worlds: races, hotels and more.</p>
+          <div class="lesson"><b>WHAT I LEARNED</b><q>Build it once, launch it everywhere, then spend a week fixing &ldquo;everywhere&rdquo;.</q></div>
+        </div>
+      </article>
+
+      <article class="card half">
+        <div class="art t-stay" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="34" cy="50" r="14"/><path d="M48 50h38M74 50v12M84 50v8"/></svg></div>
+        <div class="inner">
+          <span class="tag mono"><span class="dot live"></span>live · travel</span>
+          <h3>EliteStay</h3>
+          <p>In-depth loyalty-program hotel reviews across 82 cities in Southeast Asia, built on the engine.</p>
+          <a class="visit" href="https://elitestay.travel/">elitestay.travel</a>
+          <div class="lesson"><b>WHAT I LEARNED</b><q>Points make you loyal. Data makes you picky.</q></div>
+        </div>
+      </article>
+
+      <article class="card half">
+        <div class="art t-calm" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="6" fill="currentColor"/><circle cx="50" cy="50" r="18"/><circle cx="50" cy="50" r="31" opacity=".55"/><circle cx="50" cy="50" r="43" opacity=".25"/></svg></div>
+        <div class="inner">
+          <span class="tag mono"><span class="dot live"></span>live · games</span>
+          <h3>Yours Calmly</h3>
+          <p>A calm place to play: three short, gentle games at your own pace. Free, no sign-up.</p>
+          <a class="visit" href="https://yourscalmly.com/">yourscalmly.com</a>
+          <div class="lesson"><b>WHAT I LEARNED</b><q>Building a game takes an afternoon now. Getting someone to put their phone down and play it is the real game.</q></div>
+        </div>
+      </article>
+
+      <article class="card half">
+        <div class="art t-old" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="32" y="14" width="36" height="72" rx="8"/><path d="M45 76h10"/><rect x="40" y="26" width="8" height="8" rx="2"/><rect x="52" y="26" width="8" height="8" rx="2"/><rect x="40" y="38" width="8" height="8" rx="2"/><rect x="52" y="38" width="8" height="8" rx="2"/></svg></div>
+        <div class="inner">
+          <span class="tag mono"><span class="dot retired"></span>retired · long, long ago</span>
+          <h3>Early apps</h3>
+          <p>Before AI could write a line of code, I published my own apps on the App Store.</p>
+          <div class="lesson"><b>WHAT I LEARNED</b><q>Too many apps, not enough focus. AI fixed the first problem. Not the second.</q></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="experiments" aria-labelledby="exp-h">
+    <div class="bench-head">
+      <h2 id="exp-h">First experiments</h2>
+      <div class="legend mono"><span>no install, no sign-up</span></div>
+    </div>
+    <p class="exp-note">Before the bigger builds, my first experiments with AI were single HTML files. Download one, open it in any browser, and it just works. Offline, even. Mostly.</p>
+    <div class="mini-grid">
+      <article class="mini">
+        <div class="ico t-run" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M12 7v10M8.5 10.5h7M8.5 13.5h7"/></svg></div>
+        <span class="fav mono">my favourite</span><h3>MJ Tally</h3>
+        <p>Keeps score for a four-player mahjong table so nobody has to do the maths. Or the arguing. Tap &ldquo;Players&rdquo; to put in your own names.</p>
+        <div class="actions"><a class="btn play" href="/apps/mj.html">Play</a><a class="btn dl" href="/apps/mj.html" download="mj-tally.html">Download</a></div>
+      </article>
+      <article class="mini">
+        <div class="ico t-eng" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <h3>Games</h3>
+        <p>Sudoku, 2048 and Tetris in one file. For when &ldquo;just five minutes&rdquo; is a lie.</p>
+        <div class="actions"><a class="btn play" href="/apps/games.html">Play</a><a class="btn dl" href="/apps/games.html" download="games.html">Download</a></div>
+      </article>
+      <article class="mini">
+        <div class="ico t-calm" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4v16M10 4v16M15 4v16M20 4v16"/><circle cx="10" cy="9" r="1.8" fill="currentColor"/><circle cx="15" cy="13" r="1.8" fill="currentColor"/></svg></div>
+        <h3>Chord Builder</h3>
+        <p>Tap chords into a progression and see exactly how to play each one. Building it was easier than learning guitar.</p>
+        <div class="actions"><a class="btn play" href="/apps/guitar.html">Play</a><a class="btn dl" href="/apps/guitar.html" download="chord-builder.html">Download</a></div>
+      </article>
+      <article class="mini">
+        <div class="ico t-stay" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2-1.4 0-2.6-.6-3.1-1.6M12 6.5v1.5M12 16v1.5"/></svg></div>
+        <h3>SGD FX</h3>
+        <p>A quick currency converter from Singapore dollars, with live or hand-set rates. For checking whether the holiday is cheap or just feels cheap.</p>
+        <div class="actions"><a class="btn play" href="/apps/forex.html">Play</a><a class="btn dl" href="/apps/forex.html" download="sgd-fx.html">Download</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="tools" id="tools" aria-labelledby="tools-h">
+    <h2 id="tools-h">On the bench</h2>
+    <div>
+      <div class="chips"><span>Claude Code</span><span>Perplexity</span><span>Astro</span><span>Python</span><span>GitHub Pages</span></div>
+      <p>The tools change every few months. The habit of shipping small things doesn&rsquo;t.</p>
+    </div>
+  </section>
+
+  <section class="quote" aria-label="A line I live by">
+    <p>&ldquo;You never have to restart if you don&rsquo;t give up <span>halfway.</span>&rdquo;</p>
+  </section>
+
+  <footer>
+    <span>Professionally: <a href="https://lowyikjin.com/">lowyikjin.com</a></span>
+    <span>For AI: <a href="https://alexlowyikjin.com/">alexlowyikjin.com</a></span>
+  </footer>
+</div>
+</body>
+</html>
