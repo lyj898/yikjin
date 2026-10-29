@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>MJ Tally</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MJ Tally">
+<meta name="application-name" content="MJ Tally">
+<meta name="theme-color" content="#F2F1EA">
+<style>
+:root{
+  --bg:#F2F1EA;
+  --card:#FFFFFF;
+  --elevated:#FBFAF4;
+  --ink:#141414;
+  --ink-dim:#8A8A85;
+  --rust:#D7F239;
+  --rust-dim:#BFDD2E;
+  --line:#141414;
+  --olive:#6B7A17;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  overscroll-behavior-y:none;
+}
+header.top{
+  position:sticky; top:0; z-index:20;
+  background:var(--bg);
+  padding:calc(12px + env(safe-area-inset-top)) 20px 12px;
+  border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between;
+}
+header.top h1{
+  margin:0; font-size:19px; font-weight:800; letter-spacing:-0.5px;
+  text-transform:uppercase; display:flex; align-items:center; gap:8px;
+}
+header.top h1 .bar{
+  display:inline-block; width:18px; height:18px; border-radius:3px;
+  background:var(--rust); border:1.5px solid var(--ink);
+}
+main{padding:16px 16px calc(24px + env(safe-area-inset-bottom)); max-width:560px; margin:0 auto;}
+
+.card{
+  background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:16px; margin-bottom:14px; box-shadow:none;
+}
+.card h2{
+  margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:1px;
+  color:var(--ink-dim); font-weight:700;
+}
+
+/* Group toggle */
+.type-toggle{
+  display:flex; gap:8px; margin-bottom:14px; background:var(--elevated);
+  border-radius:10px; padding:3px; border:1.5px solid var(--line);
+}
+.type-btn{
+  flex:1; background:transparent; border:none; color:var(--ink-dim);
+  border-radius:8px; padding:9px; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;
+  font-weight:700; cursor:pointer; transition:background 0.15s ease, color 0.15s ease;
+  font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:3px;
+}
+.type-btn .g-icons{font-size:16px; letter-spacing:1px;}
+.type-btn.active{color:var(--ink); background:var(--rust);}
+
+/* Balances grid */
+.bal-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.stat{
+  background:var(--elevated); border-radius:10px; padding:12px; border:1.5px solid var(--line);
+}
+.stat .val{font-family:var(--mono); font-size:20px; font-weight:700;}
+.stat .val.pos{color:var(--olive);}
+.stat .lbl{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;}
+.stat .lbl .picon{font-size:13px;}
+.stat.leader{border-color:var(--olive); border-width:1.5px;}
+
+/* Buttons */
+.btn-primary{
+  width:100%; background:var(--rust); color:var(--ink); border:1.5px solid var(--ink); border-radius:10px;
+  padding:14px; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px;
+  cursor:pointer; font-family:inherit;
+}
+.btn-primary:active{background:var(--rust-dim);}
+.btn-primary:disabled{background:var(--elevated); color:var(--ink-dim); border-color:var(--ink-dim);}
+.btn-ghost{
+  background:none; border:1.5px solid var(--line); color:var(--ink); border-radius:10px;
+  padding:10px 14px; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px;
+  font-weight:700; font-family:inherit;
+}
+.btn-ghost:active{background:var(--elevated);}
+.btn-row{display:flex; gap:10px;}
+.btn-row .btn-primary, .btn-row .btn-ghost{flex:1; padding:14px;}
+
+/* Option grids inside wizard */
+.opt-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.opt-grid.five{grid-template-columns:repeat(5,1fr);}
+.opt-grid.three{grid-template-columns:repeat(3,1fr);}
+.opt{
+  background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:10px; padding:14px 6px; font-size:14px; font-weight:800; cursor:pointer;
+  text-transform:uppercase; letter-spacing:0.4px; font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; gap:3px; min-height:52px; justify-content:center;
+}
+.opt .sub{font-size:10px; color:var(--ink-dim); font-weight:700; letter-spacing:0.5px; text-transform:uppercase;}
+.opt .picon{font-size:24px; line-height:1;}
+.opt.selected{background:var(--rust); border-color:var(--ink);}
+.opt.selected .sub{color:var(--ink);}
+.opt:active{border-color:var(--ink);}
+.opt .big{font-family:var(--mono); font-size:20px; font-weight:800;}
+
+/* Wizard step label */
+.step-lbl{font-size:11px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.6px; margin:14px 0 8px; font-weight:700;}
+.step-lbl:first-child{margin-top:0;}
+
+/* Summary line */
+.summary{
+  background:var(--elevated); border:1.5px solid var(--line); border-radius:10px;
+  padding:12px; font-family:var(--mono); font-size:13px; font-weight:700; margin-top:14px;
+  line-height:1.6;
+}
+
+/* History */
+.hist-item{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  padding:10px 0; border-bottom:1px solid #E4E2D8;
+}
+.hist-item:last-child{border-bottom:none; padding-bottom:0;}
+.hist-item .desc{font-size:13px; font-weight:600;}
+.hist-item .desc .meta{display:block; font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;}
+.hist-item .amt{font-family:var(--mono); font-size:14px; font-weight:800; color:var(--olive); white-space:nowrap;}
+.empty{font-size:13px; color:var(--ink-dim); text-align:center; padding:6px 0;}
+
+/* Past games */
+.past-item{padding:10px 0; border-bottom:1px solid #E4E2D8;}
+.past-item:last-child{border-bottom:none; padding-bottom:0;}
+.past-head{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; font-weight:700;}
+.past-scores{display:grid; grid-template-columns:repeat(4,1fr); gap:6px;}
+.past-scores .ps{
+  font-family:var(--mono); font-size:12px; font-weight:700; text-align:center;
+  background:var(--elevated); border:1.5px solid var(--line); border-radius:8px; padding:6px 2px;
+}
+.past-scores .ps .pi{font-size:14px; display:block; margin-bottom:2px;}
+.past-scores .ps.pos{color:var(--olive);}
+.past-item.totals .past-head{color:var(--ink);}
+.past-item.totals .ps{border-color:var(--olive);}
+
+/* Win celebration */
+#winFlash{
+  position:fixed; inset:0; z-index:90; background:rgba(10,10,12,0.6);
+  display:none; align-items:center; justify-content:center; padding:24px;
+}
+#winFlash.show{display:flex;}
+.flash-box{
+  background:var(--rust); border:1.5px solid var(--ink); border-radius:14px;
+  padding:28px 24px; text-align:center; width:100%; max-width:300px;
+  animation:pop .35s cubic-bezier(.2,1.4,.4,1);
+}
+.flash-icon{font-size:54px; line-height:1;}
+.flash-title{font-size:21px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-top:10px;}
+.flash-amt{font-family:var(--mono); font-size:17px; font-weight:800; margin-top:6px;}
+@keyframes pop{from{transform:scale(.7); opacity:0;} to{transform:scale(1); opacity:1;}}
+@media (prefers-reduced-motion: reduce){.flash-box{animation:none;}}
+
+/* Toast */
+#toast{
+  position:fixed; top:calc(14px + env(safe-area-inset-top)); left:16px; right:16px;
+  background:var(--rust); color:var(--ink); font-weight:700; text-align:center;
+  padding:12px; border-radius:10px; font-size:13px; z-index:60;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2); border:1.5px solid var(--ink);
+  transform:translateY(-140%); opacity:0; pointer-events:none; visibility:hidden;
+  transition:transform 0.25s ease, opacity 0.25s ease, visibility 0.25s;
+  max-width:528px; margin:0 auto;
+}
+#toast.show{transform:translateY(0); opacity:1; visibility:visible;}
+
+/* Confirm modal */
+#confirmModal, #renameModal{
+  position:fixed; inset:0; z-index:100; background:rgba(10,10,12,0.7);
+  display:none; align-items:center; justify-content:center; padding:24px;
+}
+#confirmModal.open, #renameModal.open{display:flex;}
+.confirm-box{
+  background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:20px; max-width:320px; width:100%;
+}
+.confirm-box p{margin:0 0 16px; font-size:14px; font-weight:600; line-height:1.5;}
+.hidden{display:none !important;}
+.top-actions{display:flex; gap:8px;}
+.name-field{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.name-field .picon{font-size:20px; width:28px; text-align:center;}
+.name-field input{flex:1; min-width:0; font:inherit; font-size:16px; font-weight:600; padding:10px 12px; border:1.5px solid var(--line); border-radius:10px; background:var(--elevated); color:var(--ink);}
+.name-hint{margin:0 0 14px !important; font-weight:500 !important; color:var(--ink-dim);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1><span class="bar"></span>MJ Tally</h1>
+  <div class="top-actions"><button class="btn-ghost" id="namesBtn">Players</button><button class="btn-ghost" id="undoBtn">Undo</button></div>
+</header>
+
+<main>
+
+  <!-- Group switcher -->
+  <div class="type-toggle" id="groupToggle"></div>
+
+  <!-- Balances -->
+  <div class="card">
+    <h2>Balances</h2>
+    <div class="bal-grid" id="balGrid"></div>
+  </div>
+
+  <!-- Main actions -->
+  <div class="btn-row" style="margin-bottom:14px;">
+    <button class="btn-primary" id="winBtn">Win</button>
+    <button class="btn-ghost" id="kongBtn">Kong</button>
+  </div>
+
+  <!-- Win wizard -->
+  <div class="card hidden" id="winCard">
+    <h2>Record Win</h2>
+
+    <div class="step-lbl">Who won?</div>
+    <div class="opt-grid" id="winnerGrid"></div>
+
+    <div class="step-lbl">How many tai?</div>
+    <div class="opt-grid five" id="taiGrid"></div>
+
+    <div class="step-lbl">How was it won?</div>
+    <div class="opt-grid" id="modeGrid">
+      <button class="opt" data-mode="self">Self-draw<span class="sub">All pay double</span></button>
+      <button class="opt" data-mode="discard">Discard<span class="sub">Shooter pays double</span></button>
+    </div>
+
+    <div id="shooterWrap" class="hidden">
+      <div class="step-lbl">Who discarded?</div>
+      <div class="opt-grid three" id="shooterGrid"></div>
+    </div>
+
+    <div class="summary hidden" id="winSummary"></div>
+
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn-ghost" id="winCancel">Cancel</button>
+      <button class="btn-primary" id="winConfirm" disabled>Confirm</button>
+    </div>
+  </div>
+
+  <!-- Kong wizard -->
+  <div class="card hidden" id="kongCard">
+    <h2>Record Kong</h2>
+    <div class="step-lbl">Who got 4 of a kind?</div>
+    <div class="opt-grid" id="kongGrid"></div>
+
+    <div class="step-lbl">How was the 4th tile obtained?</div>
+    <div class="opt-grid" id="kongModeGrid">
+      <button class="opt" data-mode="self">Self-drawn<span class="sub">All pay double</span></button>
+      <button class="opt" data-mode="discard">Shot<span class="sub">Shooter pays double</span></button>
+    </div>
+
+    <div id="kongShooterWrap" class="hidden">
+      <div class="step-lbl">Who discarded the tile?</div>
+      <div class="opt-grid three" id="kongShooterGrid"></div>
+    </div>
+
+    <div class="summary hidden" id="kongSummary"></div>
+
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn-ghost" id="kongCancel">Cancel</button>
+      <button class="btn-primary" id="kongConfirm" disabled>Confirm</button>
+    </div>
+  </div>
+
+  <!-- History (current game) -->
+  <div class="card">
+    <h2>This Game</h2>
+    <div id="histList"><div class="empty">No hands recorded yet</div></div>
+  </div>
+
+  <!-- Past games -->
+  <div class="card">
+    <h2>Past Games</h2>
+    <div id="pastList"><div class="empty">No games finished yet</div></div>
+  </div>
+
+  <button class="btn-ghost" id="endBtn" style="width:100%;">End Game</button>
+
+</main>
+
+<div id="toast"></div>
+
+<div id="winFlash">
+  <div class="flash-box">
+    <div class="flash-icon"></div>
+    <div class="flash-title"></div>
+    <div class="flash-amt"></div>
+  </div>
+</div>
+
+<div id="confirmModal">
+  <div class="confirm-box">
+    <p id="confirmText">End this game? Final scores will be added to Past Games.</p>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="btn-primary" id="confirmSave">Save &amp; Start New Game</button>
+      <button class="btn-ghost" id="confirmDiscard">Discard Scores</button>
+      <button class="btn-ghost" id="confirmNo">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="renameModal">
+  <div class="confirm-box">
+    <p>Player names</p>
+    <p class="name-hint">Saved on this device only.</p>
+    <div id="nameFields"></div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="btn-primary" id="namesSave">Save Names</button>
+      <button class="btn-ghost" id="namesCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Four players. Tap "Players" in the app to rename them.
+  var PEOPLE = [
+    {name:"Player 1", icon:"\uD83D\uDD34"},
+    {name:"Player 2", icon:"\uD83D\uDFE2"},
+    {name:"Player 3", icon:"\uD83D\uDD35"},
+    {name:"Player 4", icon:"\uD83D\uDFE1"}
+  ];
+  // One table of four seats.
+  var GROUPS = [
+    {label:"Table", seats:[[0],[1],[2],[3]]}
+  ];
+
+  var RATE = 0.5;                            // kong base
+  var BASE = {1:0.5, 2:1, 3:2, 4:4, 5:8};    // win base doubles per tai
+  var KEY = "mjtally_v2";
+
+  // ---- Storage (localStorage with in-memory fallback) ----
+  var memStore = null;
+  function saveState(){
+    var json = JSON.stringify(state);
+    try{ localStorage.setItem(KEY, json); }catch(e){ memStore = json; }
+  }
+  function loadState(){
+    var raw = null;
+    try{ raw = localStorage.getItem(KEY); }catch(e){ raw = memStore; }
+    if(raw){
+      try{ return JSON.parse(raw); }catch(e){}
+    }
+    return null;
+  }
+
+  function freshGame(){ return { balances:[0,0,0,0], history:[], past:[] }; }
+  var state = loadState() || { active:0, games:[freshGame(), freshGame()] };
+  // migrate older saves that lack the past-games list
+  state.games.forEach(function(g){ if(!g.past) g.past = []; });
+  // single table: fall back to the first game if an older save points elsewhere
+  if(!(state.active < GROUPS.length)) state.active = 0;
+  if(!state.names) state.names = PEOPLE.map(function(p){ return p.name; });
+  state.names.forEach(function(n, i){ if(PEOPLE[i] && n) PEOPLE[i].name = n; });
+
+  function game(){ return state.games[state.active]; }
+  function P(i){
+    var idxs = GROUPS[state.active].seats[i];
+    return {
+      name: idxs.map(function(x){ return PEOPLE[x].name; }).join(" & "),
+      icon: idxs.map(function(x){ return PEOPLE[x].icon; }).join("")
+    };
+  }
+
+  // ---- Helpers ----
+  function money(v){
+    var sign = v < 0 ? "-" : (v > 0 ? "+" : "");
+    return sign + "$" + Math.abs(v).toFixed(2);
+  }
+  function moneyPlain(v){ return "$" + v.toFixed(2); }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  var flashTimer = null;
+  function celebrate(icon, title, amt){
+    var f = document.getElementById("winFlash");
+    f.querySelector(".flash-icon").textContent = icon;
+    f.querySelector(".flash-title").textContent = title + " \uD83C\uDF89";
+    f.querySelector(".flash-amt").textContent = amt;
+    f.classList.add("show");
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function(){ f.classList.remove("show"); }, 1800);
+  }
+
+  // ---- Group toggle ----
+  function renderGroupToggle(){
+    var t = document.getElementById("groupToggle");
+    t.innerHTML = "";
+    if(GROUPS.length < 2){ t.style.display = "none"; return; }
+    GROUPS.forEach(function(g, gi){
+      var b = document.createElement("button");
+      b.className = "type-btn" + (state.active === gi ? " active" : "");
+      var icons = g.seats.map(function(seat){
+        return seat.map(function(m){ return PEOPLE[m].icon; }).join("");
+      }).join("");
+      b.innerHTML = '<span class="g-icons">' + icons + '</span>' + g.label;
+      b.onclick = function(){
+        if(state.active === gi) return;
+        state.active = gi;
+        saveState();
+        closeWizards();
+        renderAll();
+        toast(g.label + " selected");
+      };
+      t.appendChild(b);
+    });
+  }
+
+  // ---- Render balances ----
+  function renderBalances(){
+    var grid = document.getElementById("balGrid");
+    grid.innerHTML = "";
+    var bals = game().balances;
+    var max = Math.max.apply(null, bals);
+    bals.forEach(function(v, i){
+      var d = document.createElement("div");
+      d.className = "stat" + (v === max && max > 0 ? " leader" : "");
+      d.innerHTML = '<div class="val' + (v > 0 ? ' pos' : '') + '">' + money(v) + '</div>' +
+                    '<div class="lbl"><span class="picon">' + P(i).icon + '</span> ' + P(i).name + '</div>';
+      grid.appendChild(d);
+    });
+  }
+
+  // ---- Render history ----
+  function renderHistory(){
+    var list = document.getElementById("histList");
+    list.innerHTML = "";
+    var hist = game().history;
+    if(hist.length === 0){
+      list.innerHTML = '<div class="empty">No hands recorded yet</div>';
+      return;
+    }
+    for(var i = hist.length - 1; i >= 0; i--){
+      var h = hist[i];
+      var d = document.createElement("div");
+      d.className = "hist-item";
+      d.innerHTML = '<div class="desc">' + h.desc +
+                    '<span class="meta">' + h.meta + '</span></div>' +
+                    '<div class="amt">' + money(h.amount) + '</div>';
+      list.appendChild(d);
+    }
+  }
+
+  // ---- Render past games (chronological, list grows at the bottom) ----
+  function renderPast(){
+    var list = document.getElementById("pastList");
+    list.innerHTML = "";
+    var past = game().past;
+    if(past.length === 0){
+      list.innerHTML = '<div class="empty">No games finished yet</div>';
+      return;
+    }
+    function scoreCells(vals){
+      var html = '';
+      vals.forEach(function(v, i){
+        html += '<div class="ps' + (v > 0 ? ' pos' : '') + '">' +
+                '<span class="pi">' + P(i).icon + '</span>' + money(v) + '</div>';
+      });
+      return html;
+    }
+    var totals = [0,0,0,0];
+    past.forEach(function(pg, n){
+      pg.finals.forEach(function(v, i){ totals[i] = Math.round((totals[i] + v) * 100) / 100; });
+      var d = document.createElement("div");
+      d.className = "past-item";
+      d.innerHTML = '<div class="past-head">Game ' + (n + 1) + ' \u00B7 ' + pg.date +
+                    ' \u00B7 ' + pg.hands + ' hand' + (pg.hands === 1 ? '' : 's') + '</div>' +
+                    '<div class="past-scores">' + scoreCells(pg.finals) + '</div>';
+      list.appendChild(d);
+    });
+    var t = document.createElement("div");
+    t.className = "past-item totals";
+    t.innerHTML = '<div class="past-head">All-time total \u00B7 ' + past.length +
+                  ' game' + (past.length === 1 ? '' : 's') + '</div>' +
+                  '<div class="past-scores">' + scoreCells(totals) + '</div>';
+    list.appendChild(t);
+  }
+
+  function renderAll(){
+    renderGroupToggle();
+    renderBalances();
+    renderHistory();
+    renderPast();
+  }
+
+  // ---- Shared wizard helpers ----
+  function buildPlayerGrid(gridId, onPick, excludeIdx){
+    var grid = document.getElementById(gridId);
+    grid.innerHTML = "";
+    for(var i = 0; i < 4; i++){
+      if(excludeIdx !== undefined && i === excludeIdx) continue;
+      (function(i){
+        var b = document.createElement("button");
+        b.className = "opt";
+        b.innerHTML = '<span class="picon">' + P(i).icon + '</span>' + P(i).name;
+        b.dataset.idx = i;
+        b.onclick = function(){ onPick(i, b); };
+        grid.appendChild(b);
+      })(i);
+    }
+  }
+
+  function selectIn(grid, btn){
+    grid.querySelectorAll(".opt").forEach(function(o){ o.classList.remove("selected"); });
+    btn.classList.add("selected");
+  }
+
+  // ---- Win wizard ----
+  var win = { winner:null, tai:null, mode:null, shooter:null };
+
+  function openWin(){
+    win = { winner:null, tai:null, mode:null, shooter:null };
+    document.getElementById("kongCard").classList.add("hidden");
+    document.getElementById("winCard").classList.remove("hidden");
+    document.getElementById("shooterWrap").classList.add("hidden");
+    document.getElementById("winSummary").classList.add("hidden");
+    document.getElementById("winConfirm").disabled = true;
+
+    buildPlayerGrid("winnerGrid", function(i, b){
+      win.winner = i;
+      selectIn(document.getElementById("winnerGrid"), b);
+      if(win.shooter === win.winner) win.shooter = null;
+      buildShooterGrid();
+      updateWinSummary();
+    });
+
+    var tg = document.getElementById("taiGrid");
+    tg.innerHTML = "";
+    for(var t = 1; t <= 5; t++){
+      (function(t){
+        var b = document.createElement("button");
+        b.className = "opt";
+        b.innerHTML = '<span class="big">' + t + '</span><span class="sub">' +
+                      (BASE[t] < 1 ? '50\u00A2' : '$' + BASE[t]) + '</span>';
+        b.onclick = function(){
+          win.tai = t;
+          selectIn(tg, b);
+          updateWinSummary();
+        };
+        tg.appendChild(b);
+      })(t);
+    }
+
+    var mg = document.getElementById("modeGrid");
+    mg.querySelectorAll(".opt").forEach(function(o){
+      o.classList.remove("selected");
+      o.onclick = function(){
+        win.mode = o.dataset.mode;
+        selectIn(mg, o);
+        if(win.mode === "discard"){
+          document.getElementById("shooterWrap").classList.remove("hidden");
+          buildShooterGrid();
+        }else{
+          document.getElementById("shooterWrap").classList.add("hidden");
+          win.shooter = null;
+        }
+        updateWinSummary();
+      };
+    });
+
+    document.getElementById("winCard").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function buildShooterGrid(){
+    buildPlayerGrid("shooterGrid", function(i, b){
+      win.shooter = i;
+      selectIn(document.getElementById("shooterGrid"), b);
+      updateWinSummary();
+    }, win.winner === null ? undefined : win.winner);
+    if(win.shooter !== null){
+      var btn = document.querySelector('#shooterGrid .opt[data-idx="' + win.shooter + '"]');
+      if(btn) btn.classList.add("selected");
+    }
+  }
+
+  function winReady(){
+    if(win.winner === null || win.tai === null || win.mode === null) return false;
+    if(win.mode === "discard" && win.shooter === null) return false;
+    return true;
+  }
+
+  function updateWinSummary(){
+    var s = document.getElementById("winSummary");
+    var ok = winReady();
+    document.getElementById("winConfirm").disabled = !ok;
+    if(!ok){ s.classList.add("hidden"); return; }
+    var base = BASE[win.tai];
+    var html;
+    if(win.mode === "self"){
+      var total = base * 2 * 3;
+      html = P(win.winner).icon + " " + P(win.winner).name + " +" + moneyPlain(total) + "<br>" +
+             "Each other player pays " + moneyPlain(base * 2);
+    }else{
+      var total = base * 4;
+      html = P(win.winner).icon + " " + P(win.winner).name + " +" + moneyPlain(total) + "<br>" +
+             P(win.shooter).name + " pays " + moneyPlain(base * 2) + "<br>" +
+             "Others pay " + moneyPlain(base) + " each";
+    }
+    s.innerHTML = html;
+    s.classList.remove("hidden");
+  }
+
+  function confirmWin(){
+    if(!winReady()) return;
+    var base = BASE[win.tai];
+    var deltas = [0,0,0,0];
+    var total;
+    if(win.mode === "self"){
+      total = base * 2 * 3;
+      for(var i = 0; i < 4; i++){ if(i !== win.winner) deltas[i] = -base * 2; }
+    }else{
+      total = base * 4;
+      for(var i = 0; i < 4; i++){
+        if(i === win.winner) continue;
+        deltas[i] = (i === win.shooter) ? -base * 2 : -base;
+      }
+    }
+    deltas[win.winner] = total;
+    applyEntry({
+      desc: P(win.winner).icon + " " + P(win.winner).name + " won " + win.tai + " tai",
+      meta: win.mode === "self" ? "Self-draw" : "Discard by " + P(win.shooter).name,
+      amount: total,
+      deltas: deltas
+    });
+    closeWizards();
+    celebrate(P(win.winner).icon, P(win.winner).name + " wins!", "+" + moneyPlain(total));
+  }
+
+  // ---- Kong wizard ----
+  var kong = { player:null, mode:null, shooter:null };
+
+  function openKong(){
+    kong = { player:null, mode:null, shooter:null };
+    document.getElementById("winCard").classList.add("hidden");
+    document.getElementById("kongCard").classList.remove("hidden");
+    document.getElementById("kongShooterWrap").classList.add("hidden");
+    document.getElementById("kongSummary").classList.add("hidden");
+    document.getElementById("kongConfirm").disabled = true;
+
+    buildPlayerGrid("kongGrid", function(i, b){
+      kong.player = i;
+      selectIn(document.getElementById("kongGrid"), b);
+      if(kong.shooter === kong.player) kong.shooter = null;
+      buildKongShooterGrid();
+      updateKongSummary();
+    });
+
+    var mg = document.getElementById("kongModeGrid");
+    mg.querySelectorAll(".opt").forEach(function(o){
+      o.classList.remove("selected");
+      o.onclick = function(){
+        kong.mode = o.dataset.mode;
+        selectIn(mg, o);
+        if(kong.mode === "discard"){
+          document.getElementById("kongShooterWrap").classList.remove("hidden");
+          buildKongShooterGrid();
+        }else{
+          document.getElementById("kongShooterWrap").classList.add("hidden");
+          kong.shooter = null;
+        }
+        updateKongSummary();
+      };
+    });
+
+    document.getElementById("kongCard").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function buildKongShooterGrid(){
+    buildPlayerGrid("kongShooterGrid", function(i, b){
+      kong.shooter = i;
+      selectIn(document.getElementById("kongShooterGrid"), b);
+      updateKongSummary();
+    }, kong.player === null ? undefined : kong.player);
+    if(kong.shooter !== null){
+      var btn = document.querySelector('#kongShooterGrid .opt[data-idx="' + kong.shooter + '"]');
+      if(btn) btn.classList.add("selected");
+    }
+  }
+
+  function kongReady(){
+    if(kong.player === null || kong.mode === null) return false;
+    if(kong.mode === "discard" && kong.shooter === null) return false;
+    return true;
+  }
+
+  function updateKongSummary(){
+    var s = document.getElementById("kongSummary");
+    var ok = kongReady();
+    document.getElementById("kongConfirm").disabled = !ok;
+    if(!ok){ s.classList.add("hidden"); return; }
+    var html;
+    if(kong.mode === "self"){
+      var total = RATE * 2 * 3;
+      html = P(kong.player).icon + " " + P(kong.player).name + " +" + moneyPlain(total) + "<br>" +
+             "Each other player pays " + moneyPlain(RATE * 2);
+    }else{
+      var total = RATE * 4;
+      html = P(kong.player).icon + " " + P(kong.player).name + " +" + moneyPlain(total) + "<br>" +
+             P(kong.shooter).name + " pays " + moneyPlain(RATE * 2) + "<br>" +
+             "Others pay " + moneyPlain(RATE) + " each";
+    }
+    s.innerHTML = html;
+    s.classList.remove("hidden");
+  }
+
+  function confirmKong(){
+    if(!kongReady()) return;
+    var deltas = [0,0,0,0];
+    var total;
+    if(kong.mode === "self"){
+      total = RATE * 2 * 3;
+      for(var i = 0; i < 4; i++){ if(i !== kong.player) deltas[i] = -RATE * 2; }
+    }else{
+      total = RATE * 4;
+      for(var i = 0; i < 4; i++){
+        if(i === kong.player) continue;
+        deltas[i] = (i === kong.shooter) ? -RATE * 2 : -RATE;
+      }
+    }
+    deltas[kong.player] = total;
+    applyEntry({
+      desc: P(kong.player).icon + " " + P(kong.player).name + " kong",
+      meta: kong.mode === "self" ? "Self-drawn \u00B7 4 of a kind" : "Shot by " + P(kong.shooter).name + " \u00B7 4 of a kind",
+      amount: total,
+      deltas: deltas
+    });
+    closeWizards();
+    toast(P(kong.player).icon + " " + P(kong.player).name + " kong! +" + moneyPlain(total));
+  }
+
+  // ---- Shared ----
+  function applyEntry(entry){
+    var g = game();
+    entry.deltas.forEach(function(d, i){ g.balances[i] = Math.round((g.balances[i] + d) * 100) / 100; });
+    g.history.push(entry);
+    saveState();
+    renderBalances();
+    renderHistory();
+  }
+
+  function closeWizards(){
+    document.getElementById("winCard").classList.add("hidden");
+    document.getElementById("kongCard").classList.add("hidden");
+  }
+
+  function undo(){
+    var g = game();
+    if(g.history.length === 0){ toast("Nothing to undo"); return; }
+    var last = g.history.pop();
+    last.deltas.forEach(function(d, i){ g.balances[i] = Math.round((g.balances[i] - d) * 100) / 100; });
+    saveState();
+    renderBalances();
+    renderHistory();
+    toast("Undone: " + last.desc);
+  }
+
+  // ---- End game (archive to past games or discard) ----
+  function openConfirm(){ document.getElementById("confirmModal").classList.add("open"); }
+  function closeConfirm(){ document.getElementById("confirmModal").classList.remove("open"); }
+  function endGame(save){
+    var g = game();
+    if(g.history.length === 0){
+      closeConfirm();
+      toast("No hands recorded yet");
+      return;
+    }
+    if(save){
+      var d = new Date();
+      g.past.push({
+        date: d.getDate() + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()],
+        hands: g.history.length,
+        finals: g.balances.slice()
+      });
+    }
+    g.balances = [0,0,0,0];
+    g.history = [];
+    saveState();
+    closeConfirm();
+    closeWizards();
+    renderAll();
+    toast(save ? "Game saved \u00B7 fresh game started" : "Game discarded");
+  }
+
+  // ---- Rename players ----
+  function openNames(){
+    var box = document.getElementById("nameFields");
+    box.innerHTML = "";
+    PEOPLE.forEach(function(p, i){
+      var row = document.createElement("label");
+      row.className = "name-field";
+      row.innerHTML = '<span class="picon">' + p.icon + '</span>';
+      var inp = document.createElement("input");
+      inp.type = "text"; inp.maxLength = 16; inp.value = p.name;
+      inp.setAttribute("aria-label", "Name for player " + (i + 1));
+      row.appendChild(inp);
+      box.appendChild(row);
+    });
+    document.getElementById("renameModal").classList.add("open");
+  }
+  function closeNames(){ document.getElementById("renameModal").classList.remove("open"); }
+  function saveNames(){
+    var inputs = document.querySelectorAll("#nameFields input");
+    state.names = [];
+    inputs.forEach(function(inp, i){
+      var n = inp.value.replace(/[<>&"]/g, "").trim() || ("Player " + (i + 1));
+      PEOPLE[i].name = n;
+      state.names.push(n);
+    });
+    saveState();
+    closeNames();
+    closeWizards();
+    renderAll();
+    toast("Names saved");
+  }
+
+  // ---- Wire up ----
+  document.getElementById("winBtn").onclick = openWin;
+  document.getElementById("kongBtn").onclick = openKong;
+  document.getElementById("winCancel").onclick = closeWizards;
+  document.getElementById("kongCancel").onclick = closeWizards;
+  document.getElementById("winConfirm").onclick = confirmWin;
+  document.getElementById("kongConfirm").onclick = confirmKong;
+  document.getElementById("undoBtn").onclick = undo;
+  document.getElementById("namesBtn").onclick = openNames;
+  document.getElementById("namesSave").onclick = saveNames;
+  document.getElementById("namesCancel").onclick = closeNames;
+  document.getElementById("renameModal").onclick = function(e){
+    if(e.target === this) closeNames();
+  };
+  document.getElementById("endBtn").onclick = openConfirm;
+  document.getElementById("confirmNo").onclick = closeConfirm;
+  document.getElementById("confirmSave").onclick = function(){ endGame(true); };
+  document.getElementById("confirmDiscard").onclick = function(){ endGame(false); };
+  document.getElementById("confirmModal").onclick = function(e){
+    if(e.target === this) closeConfirm();
+  };
+  document.getElementById("winFlash").onclick = function(){
+    clearTimeout(flashTimer);
+    this.classList.remove("show");
+  };
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

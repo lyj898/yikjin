@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>SGD FX</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SGD FX">
+<meta name="application-name" content="SGD FX">
+<meta name="theme-color" content="#F2F1EA">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,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">
+
+<style>
+:root{
+  --bg:#F2F1EA;
+  --card:#FFFFFF;
+  --elevated:#FBFAF4;
+  --ink:#141414;
+  --ink-dim:#8A8A85;
+  --rust:#D7F239;
+  --rust-dim:#BFDD2E;
+  --line:#141414;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
+  --olive:#6B7A17;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  overscroll-behavior-y:none;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom));
+}
+header.top{
+  position:sticky; top:0; z-index:20;
+  background:var(--bg);
+  padding:calc(12px + env(safe-area-inset-top)) 20px 12px;
+  border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between;
+}
+header.top h1{
+  margin:0; font-size:19px; font-weight:800; letter-spacing:-0.5px;
+  text-transform:uppercase; display:flex; align-items:center; gap:8px;
+}
+header.top h1 .bar{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; border-radius:5px;
+  background:var(--rust); border:1.5px solid var(--ink);
+  font-family:var(--mono); font-size:11px; font-weight:800;
+}
+.icon-btn{
+  width:36px; height:36px; border-radius:9px; background:var(--elevated);
+  border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex-shrink:0; font-size:16px;
+}
+.icon-btn:active{background:var(--rust);}
+
+main{padding:16px; max-width:560px; margin:0 auto;}
+
+.card{
+  background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:16px; margin-bottom:14px; box-shadow:none;
+}
+.card h2{
+  margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:1px;
+  color:var(--ink-dim); font-weight:700;
+}
+.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.card-head h2{margin:0;}
+
+/* preset amount chips */
+.presets{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:14px;}
+.chip{
+  background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:10px; padding:10px 8px; font-size:13px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px; font-family:var(--mono); font-weight:700;
+  width:100%;
+}
+.chip:active{border-color:var(--ink); background:var(--rust);}
+.chip.wide{grid-column:1 / -1; background:var(--card); font-size:14px; letter-spacing:0.5px;}
+
+/* currency rows */
+.row{
+  display:flex; align-items:center; gap:10px;
+  background:var(--elevated); border:1.5px solid var(--line); border-radius:12px;
+  padding:10px 12px; margin-bottom:10px; position:relative;
+}
+.row.core{
+  border-color:var(--ink); background:var(--card); border-width:2px;
+  box-shadow: 0 0 0 2px var(--rust) inset;
+  padding:9px 11px;
+}
+.row.dragging{
+  border-color:var(--ink); background:var(--rust); border-width:2px;
+  padding:9px 11px; z-index:50; touch-action:none;
+}
+.row-drag{
+  display:flex; align-items:center; justify-content:center;
+  width:22px; height:36px; flex-shrink:0; cursor:grab;
+  color:var(--ink-dim); font-size:16px; letter-spacing:-2px;
+  touch-action:none; user-select:none; -webkit-user-select:none;
+}
+.row-drag:active{cursor:grabbing; color:var(--ink);}
+.row-drag-spacer{width:22px; flex-shrink:0;}
+.row-tap{display:flex; align-items:center; gap:10px; flex:1; min-width:0;}
+.row-tap.tappable{cursor:pointer;}
+.row-tap.tappable:active{opacity:0.6;}
+.row-flag{font-size:26px; line-height:1; flex-shrink:0; width:32px; text-align:center;}
+.row-mid{flex:1; min-width:0;}
+.row-code{
+  display:flex; align-items:center; flex-wrap:wrap; gap:4px;
+  font-size:11px; font-weight:800; letter-spacing:0.6px; color:var(--ink-dim); text-transform:uppercase;
+}
+.row-code b{color:var(--ink);}
+.row-input{
+  font-family:var(--mono); font-size:20px; font-weight:800; text-align:right;
+  border:none; background:transparent; color:var(--ink); width:100%; padding:0;
+  min-width:0;
+}
+.row-input:focus{outline:none;}
+.row-input::placeholder{color:var(--ink-dim); font-weight:700;}
+.row-del{
+  width:28px; height:28px; border-radius:7px; background:transparent; border:1.5px solid transparent;
+  color:var(--ink-dim); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  flex-shrink:0; font-size:14px; font-weight:800;
+}
+.row-del:active{background:var(--bg); border-color:var(--line); color:var(--ink);}
+.core-tag{
+  font-size:9px; font-weight:800; letter-spacing:0.5px; background:var(--rust);
+  border:1.5px solid var(--ink); color:var(--ink); border-radius:5px; padding:2px 5px;
+  text-transform:uppercase; white-space:nowrap; flex-shrink:0;
+}
+.unit-tag{
+  font-size:9px; font-weight:700; letter-spacing:0.3px; background:var(--bg);
+  border:1.5px solid var(--line); color:var(--ink-dim); border-radius:5px; padding:2px 5px;
+  text-transform:uppercase; white-space:nowrap; flex-shrink:0;
+}
+
+.add-row-btn{
+  width:100%; background:none; border:1.5px dashed var(--line); color:var(--ink-dim);
+  border-radius:12px; padding:12px; font-size:12px; cursor:pointer; text-transform:uppercase;
+  letter-spacing:0.5px; font-weight:700; margin-top:2px;
+}
+.add-row-btn:active{background:var(--elevated); color:var(--ink);}
+
+/* rates info card */
+.rate-meta{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.rate-meta .txt{font-size:12px; color:var(--ink-dim); line-height:1.5;}
+.rate-meta .txt b{color:var(--ink); font-family:var(--mono);}
+
+.btn-primary{
+  width:100%; background:var(--rust); color:var(--ink); border:1.5px solid var(--ink); border-radius:10px;
+  padding:14px; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px;
+  cursor:pointer;
+}
+.btn-primary:active{background:var(--rust-dim);}
+
+.btn-ghost{
+  background:none; border:1.5px solid var(--line); color:var(--ink); border-radius:10px;
+  padding:10px 14px; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px;
+  font-weight:700;
+}
+.btn-ghost:active{background:var(--elevated);}
+
+label{display:block; font-size:11px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px;}
+input, select, textarea{
+  width:100%; background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:10px; padding:11px 12px; font-size:16px; font-family:inherit;
+}
+input:focus, select:focus, textarea:focus{outline:none; border-color:var(--ink);}
+
+/* modal overlay */
+.overlay{
+  position:fixed; inset:0; z-index:100; background:rgba(10,10,12,0.7);
+  display:none; align-items:flex-end; justify-content:center;
+}
+.overlay.show{display:flex;}
+.sheet{
+  background:var(--bg); border:1.5px solid var(--line); border-radius:18px 18px 0 0;
+  padding:18px 16px calc(18px + env(safe-area-inset-bottom)); width:100%; max-width:560px;
+  max-height:82vh; overflow-y:auto;
+}
+.sheet-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.sheet-head h2{margin:0; font-size:15px; text-transform:uppercase; letter-spacing:0.8px; font-weight:800;}
+
+.add-list{display:flex; flex-wrap:wrap; gap:8px;}
+.add-chip{
+  background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:20px; padding:9px 14px; font-size:13px; cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+}
+.add-chip:active{background:var(--rust); border-color:var(--ink);}
+.add-chip .fl{font-size:18px;}
+
+.rate-edit-row{
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:8px 10px;
+}
+.rate-edit-row .fl{font-size:20px; width:26px; text-align:center; flex-shrink:0;}
+.rate-edit-row .info{flex:0 0 auto; width:92px;}
+.rate-edit-row .info .code{font-size:12px; font-weight:800;}
+.rate-edit-row .info .sub{font-size:9px; color:var(--ink-dim); text-transform:uppercase; line-height:1.3;}
+.rate-edit-row input{font-family:var(--mono); font-size:14px; padding:9px 10px; text-align:right;}
+.rate-lookup{
+  width:34px; height:34px; border-radius:8px; background:var(--elevated); border:1.5px solid var(--line);
+  display:flex; align-items:center; justify-content:center; color:var(--ink); font-size:15px; flex-shrink:0;
+  text-decoration:none;
+}
+.rate-lookup:active{background:var(--rust);}
+
+/* confirm modal */
+#confirmModal{
+  position:fixed; inset:0; z-index:110; background:rgba(10,10,12,0.7);
+  display:none; align-items:center; justify-content:center; padding:24px;
+}
+#confirmModal.show{display:flex;}
+.confirm-box{
+  background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:20px; max-width:320px; width:100%;
+}
+.confirm-box p{margin:0 0 16px; font-size:14px; line-height:1.5;}
+.confirm-actions{display:flex; gap:10px;}
+.confirm-actions .btn-ghost, .confirm-actions .btn-primary{flex:1; padding:11px;}
+.confirm-danger{background:#F2F1EA; border:1.5px solid var(--ink); color:var(--ink);}
+
+/* toast */
+#toast{
+  position:fixed; top:calc(14px + env(safe-area-inset-top)); left:16px; right:16px;
+  background:var(--rust); color:var(--ink); font-weight:700; text-align:center;
+  padding:12px; border-radius:10px; font-size:13px; z-index:200;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2); border:1.5px solid var(--ink);
+  transform:translateY(-140%); opacity:0; pointer-events:none; visibility:hidden;
+  transition:transform 0.25s ease, opacity 0.25s ease, visibility 0.25s;
+}
+#toast.show{transform:translateY(0); opacity:1; visibility:visible;}
+
+.hint{font-size:12px; color:var(--ink-dim); line-height:1.5; margin:0 0 12px;}
+.hint code{font-family:var(--mono); background:var(--elevated); padding:1px 4px; border-radius:4px; color:var(--ink); font-size:11px;}
+.footer-note{text-align:center; font-size:11px; color:var(--ink-dim); padding:8px 20px 4px; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1><span class="bar">S$</span>SGD FX</h1>
+  <button class="icon-btn" id="rateBtn" aria-label="Edit rates">⚙</button>
+</header>
+
+<main>
+
+  <div class="card">
+    <div class="rate-meta">
+      <div class="txt">Rates last set<br><b id="lastUpdated">—</b></div>
+      <button class="btn-ghost" id="editRatesBtn">Edit rates</button>
+    </div>
+    <button class="btn-primary" id="mainFetchBtn" style="margin-top:12px;">↻ Fetch latest rates</button>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Quick Convert</h2>
+    </div>
+    <div class="presets" id="presets"></div>
+    <div id="rowsContainer"></div>
+    <button class="add-row-btn" id="addRowBtn">+ Add currency</button>
+  </div>
+
+  <p class="footer-note">Rates are manually set unless fetched.<br>Tap "Fetch latest rates" or ⚙ to update them.</p>
+
+</main>
+
+<!-- Add currency sheet -->
+<div class="overlay" id="addOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2>Add Currency</h2>
+      <button class="icon-btn" id="closeAddBtn" aria-label="Close">✕</button>
+    </div>
+    <p class="hint">Tap a currency to add it to your quick convert list.</p>
+    <div class="add-list" id="addList"></div>
+  </div>
+</div>
+
+<!-- Edit rates sheet -->
+<div class="overlay" id="rateOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2>Edit Rates</h2>
+      <button class="icon-btn" id="closeRateBtn" aria-label="Close">✕</button>
+    </div>
+    <p class="hint">Enter how many SGD equal 1 unit of each currency (e.g. 1 USD = 1.34 SGD).</p>
+    <button class="btn-ghost" id="fetchRatesBtn" style="width:100%; margin-bottom:6px;">↻ Fetch latest (needs internet)</button>
+    <p class="hint" style="margin-bottom:14px;">If fetching fails when opening this file directly, try serving it from a local server instead (e.g. <code>python3 -m http.server</code>, then open <code>http://localhost:8000</code>).</p>
+    <div id="rateEditList"></div>
+    <button class="btn-primary" id="saveRatesBtn" style="margin-top:6px;">Save rates</button>
+  </div>
+</div>
+
+<!-- Confirm remove modal -->
+<div id="confirmModal">
+  <div class="confirm-box">
+    <p id="confirmText">Remove this currency from your quick convert list?</p>
+    <div class="confirm-actions">
+      <button class="btn-ghost" id="confirmCancel">Cancel</button>
+      <button class="btn-ghost confirm-danger" id="confirmOk">Remove</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+
+  // ---- master currency list ----
+  // rate = SGD value of 1 unit of this currency (always per-1, never scaled).
+  // "unit" = preset/quick-amount multiplier only (e.g. tapping "1" for IDR sets 10,000, not the rate basis).
+  var MASTER = {
+    SGD: {name:"Singapore Dollar", flag:"🇸🇬", rate:1, decimals:3, unit:1},
+    USD: {name:"US Dollar", flag:"🇺🇸", rate:1.34, decimals:3, unit:1},
+    EUR: {name:"Euro", flag:"🇪🇺", rate:1.45, decimals:3, unit:1},
+    GBP: {name:"British Pound", flag:"🇬🇧", rate:1.70, decimals:3, unit:1},
+    MYR: {name:"Malaysian Ringgit", flag:"🇲🇾", rate:0.285, decimals:3, unit:1},
+    IDR: {name:"Indonesian Rupiah", flag:"🇮🇩", rate:0.000082, decimals:0, unit:10000},
+    AUD: {name:"Australian Dollar", flag:"🇦🇺", rate:0.87, decimals:3, unit:1},
+    JPY: {name:"Japanese Yen", flag:"🇯🇵", rate:0.0089, decimals:0, unit:100},
+    CNY: {name:"Chinese Yuan (RMB)", flag:"🇨🇳", rate:0.185, decimals:3, unit:1},
+    HKD: {name:"Hong Kong Dollar", flag:"🇭🇰", rate:0.172, decimals:3, unit:1},
+    INR: {name:"Indian Rupee", flag:"🇮🇳", rate:0.016, decimals:3, unit:1},
+    THB: {name:"Thai Baht", flag:"🇹🇭", rate:0.037, decimals:3, unit:1},
+    PHP: {name:"Philippine Peso", flag:"🇵🇭", rate:0.023, decimals:3, unit:1},
+    VND: {name:"Vietnamese Dong", flag:"🇻🇳", rate:0.000053, decimals:0, unit:10000},
+    KRW: {name:"South Korean Won", flag:"🇰🇷", rate:0.00098, decimals:0, unit:1},
+    NZD: {name:"New Zealand Dollar", flag:"🇳🇿", rate:0.81, decimals:3, unit:1},
+    CHF: {name:"Swiss Franc", flag:"🇨🇭", rate:1.53, decimals:3, unit:1},
+    CAD: {name:"Canadian Dollar", flag:"🇨🇦", rate:0.97, decimals:3, unit:1},
+    TWD: {name:"Taiwan Dollar", flag:"🇹🇼", rate:0.042, decimals:3, unit:1}
+  };
+
+  var DEFAULT_ACTIVE = ["SGD","MYR","IDR","CNY","USD","JPY"];
+  var DEFAULT_CORE = "SGD";
+  var DEFAULT_AMOUNT = "1";
+  var CORE = DEFAULT_CORE;
+  var STORE_KEY = "sgdfx_state_v4";
+
+  var state = loadState();
+  CORE = state.core || DEFAULT_CORE;
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(parsed && parsed.active && parsed.rates){
+          if(!parsed.core) parsed.core = DEFAULT_CORE;
+          // earlier version defaulted to "100" — treat that untouched default as stale
+          if(parsed.lastAmount === "100") parsed.lastAmount = DEFAULT_AMOUNT;
+          return parsed;
+        }
+      }
+    }catch(e){}
+    var rates = {};
+    Object.keys(MASTER).forEach(function(c){ rates[c] = MASTER[c].rate; });
+    return {
+      active: DEFAULT_ACTIVE.slice(),
+      core: DEFAULT_CORE,
+      rates: rates,
+      lastUpdated: null,
+      lastAmount: DEFAULT_AMOUNT
+    };
+  }
+
+  function saveState(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  function fmt(num, decimals){
+    if(!isFinite(num)) return "";
+    var d = decimals === undefined ? 2 : decimals;
+    return num.toLocaleString(undefined, {minimumFractionDigits:d, maximumFractionDigits:d});
+  }
+
+  function sanitizeNumberInput(str){
+    str = String(str == null ? "" : str).replace(/[^0-9.]/g, "");
+    var firstDot = str.indexOf(".");
+    if(firstDot !== -1){
+      str = str.slice(0, firstDot + 1) + str.slice(firstDot + 1).replace(/\./g, "");
+    }
+    return str;
+  }
+
+  function addThousandsCommas(numStr){
+    var parts = numStr.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
+
+  function displayValueWithCommas(raw){
+    return addThousandsCommas(sanitizeNumberInput(raw));
+  }
+
+  function countDigitsBefore(str, pos){
+    return str.slice(0, pos).replace(/[^0-9]/g, "").length;
+  }
+
+  function caretPosForDigitCount(str, digitCount){
+    if(digitCount <= 0) return 0;
+    var count = 0;
+    for(var i = 0; i < str.length; i++){
+      if(/[0-9]/.test(str[i])){
+        count++;
+        if(count === digitCount) return i + 1;
+      }
+    }
+    return str.length;
+  }
+
+  function decimalsFor(code){
+    if(MASTER[code]) return MASTER[code].decimals;
+    return 2;
+  }
+
+  function unitFor(code){
+    if(MASTER[code] && MASTER[code].unit) return MASTER[code].unit;
+    return 1;
+  }
+
+  // ---- rendering rows ----
+  var rowsContainer = document.getElementById("rowsContainer");
+  var presetsContainer = document.getElementById("presets");
+
+  function buildRows(){
+    rowsContainer.innerHTML = "";
+    state.active.forEach(function(code){
+      var meta = MASTER[code];
+      var row = document.createElement("div");
+      row.className = "row" + (code === CORE ? " core" : "");
+      row.dataset.code = code;
+
+      if(code === CORE){
+        var spacer = document.createElement("div");
+        spacer.className = "row-drag-spacer";
+        row.appendChild(spacer);
+      } else {
+        var handle = document.createElement("div");
+        handle.className = "row-drag";
+        handle.innerHTML = "⣿";
+        handle.setAttribute("aria-label", "Drag to reorder " + code);
+        handle.addEventListener("pointerdown", function(ev){
+          ev.preventDefault();
+          startDrag(code, ev, handle);
+        });
+        row.appendChild(handle);
+      }
+
+      var tap = document.createElement("div");
+      tap.className = "row-tap" + (code === CORE ? "" : " tappable");
+
+      var flag = document.createElement("div");
+      flag.className = "row-flag";
+      flag.textContent = meta.flag;
+      tap.appendChild(flag);
+
+      var mid = document.createElement("div");
+      mid.className = "row-mid";
+      var unit = unitFor(code);
+      var unitBadge = unit > 1 ? '<span class="unit-tag">×' + unit.toLocaleString() + '</span>' : "";
+      var codeLine = document.createElement("div");
+      codeLine.className = "row-code";
+      codeLine.innerHTML = "<b>" + code + "</b>" + unitBadge + (code === CORE ? '<span class="core-tag">Core</span>' : "");
+      mid.appendChild(codeLine);
+      tap.appendChild(mid);
+
+      if(code !== CORE){
+        tap.addEventListener("click", function(){
+          setCore(code);
+        });
+      }
+      row.appendChild(tap);
+
+      var input = document.createElement("input");
+      input.className = "row-input";
+      input.inputMode = "decimal";
+      input.placeholder = "0";
+      input.autocomplete = "off";
+      input.style.maxWidth = "120px";
+      input.addEventListener("input", function(){
+        var caret = input.selectionStart;
+        var rawBefore = input.value;
+        var digitsBefore = countDigitsBefore(rawBefore, caret);
+        var sanitized = sanitizeNumberInput(rawBefore);
+        var formatted = addThousandsCommas(sanitized);
+        input.value = formatted;
+        var newCaret = caretPosForDigitCount(formatted, digitsBefore);
+        input.setSelectionRange(newCaret, newCaret);
+        onRowInput(code, sanitized);
+      });
+      input.addEventListener("focus", function(){
+        input.select();
+      });
+      row.appendChild(input);
+
+      if(code !== CORE){
+        var del = document.createElement("button");
+        del.className = "row-del";
+        del.innerHTML = "✕";
+        del.setAttribute("aria-label", "Remove " + code);
+        del.addEventListener("click", function(){
+          askRemove(code);
+        });
+        row.appendChild(del);
+      }
+
+      rowsContainer.appendChild(row);
+    });
+  }
+
+  // ---- switch which currency is core ----
+  function setCore(newCore){
+    if(newCore === CORE) return;
+    var newCoreInput = rowsContainer.querySelector('.row[data-code="' + newCore + '"] .row-input');
+    var anchorValue = newCoreInput ? newCoreInput.value : "";
+
+    var rest = state.active.filter(function(c){ return c !== newCore; });
+    state.active = [newCore].concat(rest);
+    CORE = newCore;
+    state.core = newCore;
+    saveState();
+
+    buildRows();
+    buildPresets();
+
+    var coreInputEl = rowsContainer.querySelector('.row[data-code="' + CORE + '"] .row-input');
+    if(anchorValue && anchorValue.trim() !== "" && coreInputEl){
+      coreInputEl.value = anchorValue;
+      onRowInput(CORE, anchorValue);
+    }
+    showToast(newCore + " is now the core currency");
+  }
+
+  // ---- drag to reorder ----
+  var dragState = null;
+
+  function getMovableRows(){
+    return Array.from(rowsContainer.querySelectorAll('.row')).filter(function(r){
+      return r.dataset.code !== CORE;
+    });
+  }
+
+  function clamp(n, min, max){
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function startDrag(code, e, handle){
+    var row = rowsContainer.querySelector('.row[data-code="' + code + '"]');
+    if(!row) return;
+    var siblings = getMovableRows();
+    var idx = siblings.indexOf(row);
+    var rowRect = row.getBoundingClientRect();
+    var style = getComputedStyle(row);
+    var marginBottom = parseFloat(style.marginBottom) || 0;
+
+    dragState = {
+      code: code,
+      row: row,
+      startY: e.clientY,
+      startIndex: idx,
+      currentIndex: idx,
+      rowHeight: rowRect.height + marginBottom
+    };
+
+    try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+    row.classList.add("dragging");
+
+    document.addEventListener("pointermove", onDragMove);
+    document.addEventListener("pointerup", onDragEnd);
+    document.addEventListener("pointercancel", onDragEnd);
+  }
+
+  function onDragMove(e){
+    if(!dragState) return;
+    e.preventDefault();
+    var dy = e.clientY - dragState.startY;
+    var steps = Math.round(dy / dragState.rowHeight);
+    var maxIndex = getMovableRows().length - 1;
+    var targetIndex = clamp(dragState.startIndex + steps, 0, maxIndex);
+
+    if(targetIndex !== dragState.currentIndex){
+      var siblings = getMovableRows();
+      var row = dragState.row;
+      var refRow = siblings[targetIndex];
+      if(targetIndex > dragState.currentIndex){
+        refRow.parentNode.insertBefore(row, refRow.nextSibling);
+      } else {
+        refRow.parentNode.insertBefore(row, refRow);
+      }
+      dragState.currentIndex = targetIndex;
+    }
+
+    var residual = dy - (targetIndex - dragState.startIndex) * dragState.rowHeight;
+    dragState.row.style.transform = "translateY(" + residual + "px)";
+  }
+
+  function onDragEnd(){
+    if(!dragState) return;
+    dragState.row.classList.remove("dragging");
+    dragState.row.style.transform = "";
+    document.removeEventListener("pointermove", onDragMove);
+    document.removeEventListener("pointerup", onDragEnd);
+    document.removeEventListener("pointercancel", onDragEnd);
+
+    var newOrder = [CORE].concat(getMovableRows().map(function(r){ return r.dataset.code; }));
+    state.active = newOrder;
+    saveState();
+    dragState = null;
+  }
+
+  function buildPresets(){
+    var amounts = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    presetsContainer.innerHTML = "";
+    var flag = MASTER[CORE] ? MASTER[CORE].flag : "";
+    var unit = unitFor(CORE);
+    amounts.forEach(function(a){
+      var chip = document.createElement("button");
+      chip.className = "chip";
+      chip.textContent = flag + " " + a;
+      chip.addEventListener("click", function(){
+        setCoreAmount(String(a * unit));
+      });
+      presetsContainer.appendChild(chip);
+    });
+
+    var multBtn = document.createElement("button");
+    multBtn.className = "chip wide";
+    multBtn.textContent = "×10";
+    multBtn.setAttribute("aria-label", "Multiply current amount by 10");
+    multBtn.addEventListener("click", multiplyCoreByTen);
+    presetsContainer.appendChild(multBtn);
+  }
+
+  function multiplyCoreByTen(){
+    var input = rowsContainer.querySelector('.row[data-code="' + CORE + '"] .row-input');
+    if(!input) return;
+    var current = parseFloat(sanitizeNumberInput(input.value));
+    if(isNaN(current) || current === 0) current = 1;
+    var next = current * 10;
+    var nextStr = String(next);
+    input.value = displayValueWithCommas(nextStr);
+    onRowInput(CORE, nextStr);
+  }
+
+  function setCoreAmount(val){
+    var row = rowsContainer.querySelector('.row[data-code="' + CORE + '"] .row-input');
+    if(row){
+      row.value = displayValueWithCommas(val);
+      onRowInput(CORE, val);
+    }
+  }
+
+  function onRowInput(code, rawVal){
+    var cleaned = sanitizeNumberInput(rawVal);
+    var val = parseFloat(cleaned);
+    state.lastAmount = cleaned;
+    if(isNaN(val) || cleaned === ""){
+      // clear all other rows
+      state.active.forEach(function(c){
+        if(c === code) return;
+        var inp = rowsContainer.querySelector('.row[data-code="' + c + '"] .row-input');
+        if(inp) inp.value = "";
+      });
+      saveState();
+      return;
+    }
+    var sgdAmount = code === "SGD" ? val : val * state.rates[code];
+    state.active.forEach(function(c){
+      if(c === code) return;
+      var inp = rowsContainer.querySelector('.row[data-code="' + c + '"] .row-input');
+      if(!inp) return;
+      var out = c === "SGD" ? sgdAmount : sgdAmount / state.rates[c];
+      inp.value = fmt(out, decimalsFor(c));
+    });
+    saveState();
+  }
+
+  function refreshAllFromCore(){
+    var coreInput = rowsContainer.querySelector('.row[data-code="' + CORE + '"] .row-input');
+    var val = coreInput ? coreInput.value : "";
+    if(val && val.trim() !== ""){
+      onRowInput(CORE, val);
+    }
+  }
+
+  // ---- remove flow ----
+  var pendingRemove = null;
+  var confirmModal = document.getElementById("confirmModal");
+  var confirmText = document.getElementById("confirmText");
+
+  function askRemove(code){
+    pendingRemove = code;
+    confirmText.textContent = "Remove " + code + " (" + MASTER[code].name + ") from your quick convert list?";
+    confirmModal.classList.add("show");
+  }
+
+  document.getElementById("confirmCancel").addEventListener("click", function(){
+    pendingRemove = null;
+    confirmModal.classList.remove("show");
+  });
+
+  document.getElementById("confirmOk").addEventListener("click", function(){
+    if(pendingRemove){
+      state.active = state.active.filter(function(c){ return c !== pendingRemove; });
+      saveState();
+      buildRows();
+      buildAddList();
+      refreshAllFromCore();
+      showToast(pendingRemove + " removed");
+    }
+    pendingRemove = null;
+    confirmModal.classList.remove("show");
+  });
+
+  // ---- add currency sheet ----
+  var addOverlay = document.getElementById("addOverlay");
+  var addList = document.getElementById("addList");
+
+  function buildAddList(){
+    addList.innerHTML = "";
+    var remaining = Object.keys(MASTER).filter(function(c){ return state.active.indexOf(c) === -1; });
+    if(remaining.length === 0){
+      var p = document.createElement("p");
+      p.className = "hint";
+      p.textContent = "All available currencies are already in your list.";
+      addList.appendChild(p);
+      return;
+    }
+    remaining.forEach(function(code){
+      var chip = document.createElement("button");
+      chip.className = "add-chip";
+      chip.innerHTML = '<span class="fl">' + MASTER[code].flag + '</span><span>' + code + '</span>';
+      chip.addEventListener("click", function(){
+        state.active.push(code);
+        saveState();
+        buildRows();
+        buildAddList();
+        refreshAllFromCore();
+        addOverlay.classList.remove("show");
+        showToast(code + " added");
+      });
+      addList.appendChild(chip);
+    });
+  }
+
+  document.getElementById("addRowBtn").addEventListener("click", function(){
+    buildAddList();
+    addOverlay.classList.add("show");
+  });
+  document.getElementById("closeAddBtn").addEventListener("click", function(){
+    addOverlay.classList.remove("show");
+  });
+  addOverlay.addEventListener("click", function(e){
+    if(e.target === addOverlay) addOverlay.classList.remove("show");
+  });
+
+  // ---- edit rates sheet ----
+  var rateOverlay = document.getElementById("rateOverlay");
+  var rateEditList = document.getElementById("rateEditList");
+
+  function buildRateEditList(){
+    rateEditList.innerHTML = "";
+    state.active.forEach(function(code){
+      if(code === "SGD") return;
+      var meta = MASTER[code];
+      var row = document.createElement("div");
+      row.className = "rate-edit-row";
+      row.innerHTML =
+        '<div class="fl">' + meta.flag + '</div>' +
+        '<div class="info"><div class="code">' + code + '</div><div class="sub">SGD per 1</div></div>';
+      var input = document.createElement("input");
+      input.type = "text";
+      input.inputMode = "decimal";
+      input.dataset.code = code;
+      input.value = state.rates[code];
+      row.appendChild(input);
+      rateEditList.appendChild(row);
+    });
+  }
+
+  function openRateSheet(){
+    buildRateEditList();
+    rateOverlay.classList.add("show");
+  }
+
+  function formatRateForInput(v){
+    if(!isFinite(v) || v <= 0) return "";
+    var decimals = v < 0.001 ? 8 : (v < 1 ? 5 : 4);
+    var s = v.toFixed(decimals);
+    s = s.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+    return s;
+  }
+
+  var RATE_SOURCES = [
+    {
+      name: "open.er-api.com",
+      url: "https://open.er-api.com/v6/latest/SGD",
+      parse: function(data){
+        if(data.result !== "success" || !data.rates) throw new Error("unexpected response shape");
+        return data.rates; // units of code per 1 SGD
+      }
+    },
+    {
+      name: "frankfurter.dev",
+      url: "https://api.frankfurter.dev/v1/latest?base=SGD",
+      parse: function(data){
+        if(!data.rates) throw new Error("unexpected response shape");
+        return data.rates; // units of code per 1 SGD
+      }
+    }
+  ];
+
+  async function fetchRatesRaw(){
+    var ratesData = null;
+    var lastErr = null;
+
+    for(var i = 0; i < RATE_SOURCES.length; i++){
+      var source = RATE_SOURCES[i];
+      try{
+        var res = await fetch(source.url, {cache: "no-store"});
+        if(!res.ok) throw new Error(source.name + " returned HTTP " + res.status);
+        var data = await res.json();
+        ratesData = source.parse(data);
+        break;
+      }catch(err){
+        lastErr = err;
+        console.error("Rate fetch failed for " + source.name, err);
+      }
+    }
+
+    return {ratesData: ratesData, error: lastErr};
+  }
+
+  function fetchFailMessage(lastErr){
+    var msg = "Couldn't fetch rates";
+    if(lastErr && lastErr.message) msg += " (" + lastErr.message + ")";
+    if(location.protocol === "file:"){
+      msg += ". Tip: pages opened directly as a file often block network requests — try serving this file from a local server (e.g. run \"python3 -m http.server\" in its folder, then open http://localhost:8000 instead).";
+    } else {
+      msg += ". Check your internet connection, or try again in a moment.";
+    }
+    return msg;
+  }
+
+  async function withButtonBusy(btn, busyText, fn){
+    var original = btn.textContent;
+    btn.textContent = busyText;
+    btn.disabled = true;
+    try{
+      await fn();
+    } finally {
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  }
+
+  // Fetch + review flow, used inside the Edit Rates sheet (fills fields, user still taps Save)
+  async function fetchLiveRates(){
+    var btn = document.getElementById("fetchRatesBtn");
+    await withButtonBusy(btn, "Fetching…", async function(){
+      var result = await fetchRatesRaw();
+      if(!result.ratesData){
+        showToast(fetchFailMessage(result.error));
+        return;
+      }
+      var inputs = rateEditList.querySelectorAll("input");
+      var updated = 0, skipped = [];
+      inputs.forEach(function(inp){
+        var code = inp.dataset.code;
+        var unitsPerSgd = result.ratesData[code];
+        if(unitsPerSgd && unitsPerSgd > 0){
+          inp.value = formatRateForInput(1 / unitsPerSgd);
+          updated++;
+        } else {
+          skipped.push(code);
+        }
+      });
+      if(skipped.length){
+        showToast("Fetched " + updated + ". No data for " + skipped.join(", ") + " — edit manually.");
+      } else {
+        showToast("Fetched latest rates — tap Save to apply");
+      }
+    });
+  }
+
+  // Fetch + apply flow, used directly on the main page — no review step, commits immediately
+  async function fetchAndApplyRates(){
+    var btn = document.getElementById("mainFetchBtn");
+    await withButtonBusy(btn, "Fetching…", async function(){
+      var result = await fetchRatesRaw();
+      if(!result.ratesData){
+        showToast(fetchFailMessage(result.error));
+        return;
+      }
+      var updated = 0, skipped = [];
+      state.active.forEach(function(code){
+        if(code === "SGD") return;
+        var unitsPerSgd = result.ratesData[code];
+        if(unitsPerSgd && unitsPerSgd > 0){
+          state.rates[code] = 1 / unitsPerSgd;
+          updated++;
+        } else {
+          skipped.push(code);
+        }
+      });
+      state.lastUpdated = new Date().toISOString();
+      saveState();
+      updateLastUpdatedLabel();
+      refreshAllFromCore();
+      if(skipped.length){
+        showToast("Updated " + updated + ". No data for " + skipped.join(", ") + ".");
+      } else {
+        showToast("Rates updated");
+      }
+    });
+  }
+
+  document.getElementById("fetchRatesBtn").addEventListener("click", fetchLiveRates);
+  document.getElementById("mainFetchBtn").addEventListener("click", fetchAndApplyRates);
+
+  document.getElementById("rateBtn").addEventListener("click", openRateSheet);
+  document.getElementById("editRatesBtn").addEventListener("click", openRateSheet);
+  document.getElementById("closeRateBtn").addEventListener("click", function(){
+    rateOverlay.classList.remove("show");
+  });
+  rateOverlay.addEventListener("click", function(e){
+    if(e.target === rateOverlay) rateOverlay.classList.remove("show");
+  });
+
+  document.getElementById("saveRatesBtn").addEventListener("click", function(){
+    var inputs = rateEditList.querySelectorAll("input");
+    var ok = true;
+    inputs.forEach(function(inp){
+      var v = parseFloat(inp.value);
+      if(isNaN(v) || v <= 0){ ok = false; return; }
+      state.rates[inp.dataset.code] = v;
+    });
+    if(!ok){
+      showToast("Enter a valid rate for every currency");
+      return;
+    }
+    state.lastUpdated = new Date().toISOString();
+    saveState();
+    updateLastUpdatedLabel();
+    rateOverlay.classList.remove("show");
+    refreshAllFromCore();
+    showToast("Rates updated");
+  });
+
+  function updateLastUpdatedLabel(){
+    var el = document.getElementById("lastUpdated");
+    if(!state.lastUpdated){
+      el.textContent = "using built-in defaults";
+      return;
+    }
+    var d = new Date(state.lastUpdated);
+    var opts = {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"};
+    el.textContent = d.toLocaleString(undefined, opts);
+  }
+
+  // ---- toast ----
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){
+      toastEl.classList.remove("show");
+    }, 1800);
+  }
+
+  // ---- init ----
+  buildPresets();
+  buildRows();
+  updateLastUpdatedLabel();
+
+  // restore last amount into core row
+  if(state.lastAmount){
+    var coreInput = rowsContainer.querySelector('.row[data-code="' + CORE + '"] .row-input');
+    if(coreInput){
+      coreInput.value = displayValueWithCommas(state.lastAmount);
+      onRowInput(CORE, state.lastAmount);
+    }
+  } else {
+    setCoreAmount(DEFAULT_AMOUNT);
+  }
+
+})();
+</script>
+</body>
+</html>

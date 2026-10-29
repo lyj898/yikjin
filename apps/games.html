@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Games</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Games">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Games">
+<meta name="theme-color" content="#F2F1EA">
+<style>
+:root{
+  --bg:#F2F1EA;
+  --card:#FFFFFF;
+  --elevated:#FBFAF4;
+  --ink:#141414;
+  --ink-dim:#8A8A85;
+  --rust:#D7F239;
+  --rust-dim:#BFDD2E;
+  --line:#141414;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  overscroll-behavior-y:none; -webkit-user-select:none; user-select:none;
+}
+header.top{
+  position:sticky; top:0; z-index:20;
+  background:var(--bg);
+  padding:calc(12px + env(safe-area-inset-top)) 20px 12px;
+  border-bottom:1px solid var(--line);
+}
+header.top h1{
+  margin:0 0 12px; font-size:19px; font-weight:800; letter-spacing:-0.5px;
+  text-transform:uppercase; display:flex; align-items:center; gap:8px;
+}
+header.top h1 .bar{
+  display:inline-block; width:18px; height:18px; border-radius:3px;
+  background:var(--rust); border:1.5px solid var(--ink); flex-shrink:0;
+}
+
+.type-toggle{
+  display:flex; gap:8px; background:var(--elevated);
+  border-radius:10px; padding:3px; border:1.5px solid var(--line);
+}
+.type-btn{
+  flex:1; background:transparent; border:none; color:var(--ink-dim);
+  border-radius:8px; padding:10px; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;
+  font-weight:700; cursor:pointer;
+}
+.type-btn.active{color:var(--ink); background:var(--rust);}
+
+main{padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.card{
+  background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:16px; margin-bottom:14px; box-shadow:none;
+}
+.card h2{
+  margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:1px;
+  color:var(--ink-dim); font-weight:700;
+}
+
+.btn-primary{
+  width:100%; background:var(--rust); color:var(--ink); border:1.5px solid var(--ink); border-radius:10px;
+  padding:14px; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px;
+  cursor:pointer;
+}
+.btn-primary:active{background:var(--rust-dim);}
+.btn-ghost{
+  background:none; border:1.5px solid var(--line); color:var(--ink); border-radius:10px;
+  padding:10px 14px; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px;
+}
+.btn-ghost:active{background:var(--elevated);}
+.btn-ghost:disabled{opacity:0.35; cursor:default;}
+
+.chip-row{display:grid; grid-template-columns:repeat(9,1fr); gap:6px; margin-bottom:2px;}
+.chip{
+  background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:8px; padding:9px 0; font-size:13px; cursor:pointer; font-weight:800;
+  display:flex; align-items:center; justify-content:center; font-family:var(--mono);
+}
+.chip.active{background:var(--rust);}
+.diff-caption{font-size:11px; color:var(--ink-dim); margin:-4px 0 12px; text-transform:uppercase; letter-spacing:0.4px;}
+
+.stats-row{display:flex; gap:10px; margin-bottom:14px;}
+.stat{
+  flex:1; background:var(--elevated); border-radius:10px; padding:12px; border:1.5px solid var(--line);
+  text-align:center;
+}
+.stat .val{font-family:var(--mono); font-size:20px; font-weight:700;}
+.stat .lbl{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;}
+
+/* Sudoku board */
+.board-wrap{display:flex; justify-content:center; margin-bottom:14px;}
+#s-board{
+  display:grid; grid-template-columns:repeat(9,1fr); grid-template-rows:repeat(9,1fr);
+  width:100%; max-width:400px; aspect-ratio:1; border:2px solid var(--ink); border-radius:8px; overflow:hidden;
+  background:var(--ink);
+}
+.s-cell{
+  background:var(--card); display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:clamp(14px,4.2vw,20px); font-weight:700; color:var(--ink);
+  border:0.5px solid #D8D6CC; cursor:pointer; position:relative;
+}
+.s-cell.given{color:var(--ink); font-weight:800;}
+.s-cell.user-val{color:var(--ink); font-weight:700;}
+.s-cell.error{color:#B23A3A;}
+.s-cell.b-right{border-right:2px solid var(--ink);}
+.s-cell.b-bottom{border-bottom:2px solid var(--ink);}
+.s-cell.selected{background:var(--rust);}
+.s-cell.peer{background:var(--elevated);}
+.s-cell.same-num{background:rgba(215,242,57,0.35);}
+.s-cell.selected.error{background:var(--rust);}
+
+.numpad{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:14px;}
+.numpad button{
+  background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:10px; padding:14px 0; font-size:18px; font-weight:800; cursor:pointer; font-family:var(--mono);
+}
+.numpad button:active{background:var(--rust);}
+
+.action-row{display:flex; gap:8px; margin-bottom:14px;}
+.action-row .btn-ghost{flex:1;}
+.loading{text-align:center; padding:40px 0; color:var(--ink-dim); font-size:13px; text-transform:uppercase; letter-spacing:0.5px;}
+
+/* 2048 board */
+#g-board{
+  display:grid; gap:8px; width:100%; max-width:400px; aspect-ratio:1;
+  background:var(--elevated); border:1.5px solid var(--line); border-radius:12px; padding:8px;
+}
+.g-tile{
+  border-radius:8px; border:1.5px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-weight:700; aspect-ratio:1;
+}
+.dpad{
+  display:grid; grid-template-columns:56px 56px 56px; grid-template-rows:56px 56px 56px;
+  gap:8px; justify-content:center; margin-bottom:14px;
+}
+.dpad button{
+  background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:10px; font-size:20px; font-weight:800; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.dpad button:active{background:var(--rust);}
+.dpad .up{grid-column:2; grid-row:1;}
+.dpad .left{grid-column:1; grid-row:2;}
+.dpad .center{grid-column:2; grid-row:2; background:var(--card); cursor:default;}
+.dpad .right{grid-column:3; grid-row:2;}
+.dpad .down{grid-column:2; grid-row:3;}
+.dpad .center.tt-drop{background:var(--rust); cursor:pointer; font-size:16px;}
+.dpad .center.tt-drop:active{background:var(--rust-dim);}
+
+/* Tetris board + side controls (kept compact so it fits one screen without scrolling) */
+.tt-diff-header{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+.tt-diff-header h2{margin:0;}
+.tt-diff-header .diff-caption-inline{font-size:9px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.3px;}
+.tt-card{padding:10px 12px;}
+
+.tt-play-area{display:flex; gap:8px; justify-content:center; align-items:flex-start; margin-bottom:12px;}
+#tt-board{
+  display:grid; grid-template-columns:repeat(10,1fr); grid-template-rows:repeat(20,1fr);
+  gap:1px; width:min(44vw,168px); flex-shrink:0; aspect-ratio:10/20;
+  background:var(--line); border:2px solid var(--ink); border-radius:8px; padding:1px; overflow:hidden;
+}
+.tt-cell{background:var(--elevated);}
+.tt-cell.filled{border:1px solid rgba(20,20,20,0.25);}
+.tt-cell.ghost{background:var(--elevated); border:1.5px dashed #C9C6B8;}
+
+.tt-controls-col{display:flex; flex-direction:column; gap:6px; width:88px; flex-shrink:0;}
+.tt-next-card{
+  background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:6px; width:100%;
+}
+.tt-next-card h3{
+  margin:0 0 5px; font-size:9px; text-transform:uppercase; letter-spacing:0.4px; color:var(--ink-dim); font-weight:700; text-align:center;
+}
+#tt-next{
+  display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr);
+  gap:1px; width:100%; aspect-ratio:1; background:var(--elevated); border:1px solid var(--line); border-radius:4px; padding:1px;
+}
+.tt-next-cell{background:var(--elevated);}
+
+.tt-ctrl-grid{display:flex; flex-direction:column; gap:6px;}
+.tt-ctrl-row{display:flex; gap:6px;}
+.tt-ctrl-btn{
+  flex:1; aspect-ratio:1; background:var(--elevated); border:1.5px solid var(--line); color:var(--ink);
+  border-radius:8px; font-size:16px; font-weight:800; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.tt-ctrl-btn:active{background:var(--rust);}
+.tt-ctrl-btn.drop{background:var(--rust);}
+.tt-ctrl-btn.drop:active{background:var(--rust-dim);}
+
+
+
+/* Shared toast + confirm modal */
+.toast{
+  position:fixed; top:calc(14px + env(safe-area-inset-top)); left:16px; right:16px;
+  background:var(--rust); color:var(--ink); font-weight:700; text-align:center;
+  padding:12px; border-radius:10px; font-size:13px; z-index:60;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2); border:1.5px solid var(--ink);
+  transform:translateY(-140%); opacity:0; pointer-events:none; visibility:hidden;
+  transition:transform 0.25s ease, opacity 0.25s ease, visibility 0.25s;
+}
+.toast.show{transform:translateY(0); opacity:1; visibility:visible;}
+
+.confirm-modal{
+  position:fixed; inset:0; z-index:100; background:rgba(10,10,12,0.7);
+  display:none; align-items:center; justify-content:center; padding:24px;
+}
+.confirm-modal.show{display:flex;}
+.confirm-box{
+  background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:20px; max-width:320px; width:100%;
+}
+.confirm-box p{margin:0 0 16px; font-size:14px; line-height:1.4;}
+.confirm-box .row{display:flex; gap:8px;}
+.confirm-box .row button{flex:1;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1><span class="bar"></span>Games</h1>
+  <div class="type-toggle">
+    <button class="type-btn active" id="tabBtnSudoku">Sudoku</button>
+    <button class="type-btn" id="tabBtn2048">2048</button>
+    <button class="type-btn" id="tabBtnTetris">Tetris</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= SUDOKU TAB ================= -->
+  <section class="tab-panel active" id="tab-sudoku">
+    <div class="card">
+      <h2>Difficulty</h2>
+      <div class="chip-row" id="s-diffChips"></div>
+      <div class="diff-caption">1 = easiest · 9 = hardest</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="val" id="s-timerVal">00:00</div><div class="lbl">Time</div></div>
+      <div class="stat"><div class="val" id="s-mistakesVal">0/3</div><div class="lbl">Mistakes</div></div>
+      <div class="stat"><div class="val" id="s-bestVal">--:--</div><div class="lbl">Best</div></div>
+    </div>
+
+    <div class="board-wrap" id="s-boardWrap">
+      <div id="s-board"></div>
+    </div>
+
+    <div class="numpad" id="s-numpad"></div>
+
+    <div class="action-row">
+      <button class="btn-ghost" id="s-hintBtn">Hint (3)</button>
+      <button class="btn-ghost" id="s-eraseBtn">Erase</button>
+    </div>
+
+    <button class="btn-primary" id="s-newGameBtn">New Game</button>
+  </section>
+
+  <!-- ================= 2048 TAB ================= -->
+  <section class="tab-panel" id="tab-2048">
+    <div class="card">
+      <h2>Difficulty</h2>
+      <div class="chip-row" id="g-diffChips"></div>
+      <div class="diff-caption">1 = easiest · 9 = hardest</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="val" id="g-scoreVal">0</div><div class="lbl">Score</div></div>
+      <div class="stat"><div class="val" id="g-bestVal">0</div><div class="lbl">Best</div></div>
+      <div class="stat"><div class="val" id="g-targetVal">2048</div><div class="lbl">Target</div></div>
+    </div>
+
+    <div class="board-wrap">
+      <div id="g-board"></div>
+    </div>
+
+    <div class="dpad" id="g-dpad">
+      <button class="up">&#9650;</button>
+      <button class="left">&#9664;</button>
+      <div class="center"></div>
+      <button class="right">&#9654;</button>
+      <button class="down">&#9660;</button>
+    </div>
+
+    <button class="btn-primary" id="g-newGameBtn">New Game</button>
+  </section>
+
+  <!-- ================= TETRIS TAB ================= -->
+  <section class="tab-panel" id="tab-tetris">
+    <div class="card tt-card">
+      <div class="tt-diff-header">
+        <h2>Difficulty</h2>
+        <span class="diff-caption-inline">1 = easiest · 9 = hardest</span>
+      </div>
+      <div class="chip-row" id="tt-diffChips"></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="val" id="tt-scoreVal">0</div><div class="lbl">Score</div></div>
+      <div class="stat"><div class="val" id="tt-linesVal">0</div><div class="lbl">Lines</div></div>
+      <div class="stat"><div class="val" id="tt-bestVal">0</div><div class="lbl">Best</div></div>
+    </div>
+
+    <div class="tt-play-area">
+      <div id="tt-board"></div>
+      <div class="tt-controls-col">
+        <div class="tt-next-card">
+          <h3>Next</h3>
+          <div id="tt-next"></div>
+        </div>
+        <div class="tt-ctrl-grid">
+          <button class="tt-ctrl-btn" id="tt-rotateBtn">&#8635;</button>
+          <div class="tt-ctrl-row">
+            <button class="tt-ctrl-btn" id="tt-leftBtn">&#9664;</button>
+            <button class="tt-ctrl-btn" id="tt-rightBtn">&#9654;</button>
+          </div>
+          <div class="tt-ctrl-row">
+            <button class="tt-ctrl-btn" id="tt-downBtn">&#9660;</button>
+            <button class="tt-ctrl-btn drop" id="tt-dropBtn">&#8676;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="tt-newGameBtn">New Game</button>
+  </section>
+
+</main>
+
+<!-- Sudoku toast + modal -->
+<div class="toast" id="s-toast"></div>
+<div class="confirm-modal" id="s-confirmModal">
+  <div class="confirm-box">
+    <p id="s-confirmText">Start a new game? Your current progress will be lost.</p>
+    <div class="row">
+      <button class="btn-ghost" id="s-confirmCancel">Cancel</button>
+      <button class="btn-primary" id="s-confirmOk">New Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2048 toast + modal -->
+<div class="toast" id="g-toast"></div>
+<div class="confirm-modal" id="g-confirmModal">
+  <div class="confirm-box">
+    <p id="g-confirmText">Start a new game? Your current progress will be lost.</p>
+    <div class="row">
+      <button class="btn-ghost" id="g-confirmCancel">Cancel</button>
+      <button class="btn-primary" id="g-confirmOk">New Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tetris toast + modal -->
+<div class="toast" id="tt-toast"></div>
+<div class="confirm-modal" id="tt-confirmModal">
+  <div class="confirm-box">
+    <p id="tt-confirmText">Start a new game? Your current progress will be lost.</p>
+    <div class="row">
+      <button class="btn-ghost" id="tt-confirmCancel">Cancel</button>
+      <button class="btn-primary" id="tt-confirmOk">New Game</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   TAB SWITCHING
+========================================================= */
+const tabBtnSudoku = document.getElementById('tabBtnSudoku');
+const tabBtn2048 = document.getElementById('tabBtn2048');
+const tabBtnTetris = document.getElementById('tabBtnTetris');
+const tabSudoku = document.getElementById('tab-sudoku');
+const tab2048 = document.getElementById('tab-2048');
+const tabTetris = document.getElementById('tab-tetris');
+
+function showTab(name){
+  const panels = {sudoku:tabSudoku, '2048':tab2048, tetris:tabTetris};
+  const btns = {sudoku:tabBtnSudoku, '2048':tabBtn2048, tetris:tabBtnTetris};
+  Object.keys(panels).forEach(key=>{
+    panels[key].classList.toggle('active', key===name);
+    btns[key].classList.toggle('active', key===name);
+  });
+  window.SudokuApp && (name==='sudoku' ? window.SudokuApp.resume() : window.SudokuApp.pause());
+  window.TetrisApp && (name==='tetris' ? window.TetrisApp.resume() : window.TetrisApp.pause());
+}
+tabBtnSudoku.onclick = ()=>showTab('sudoku');
+tabBtn2048.onclick = ()=>showTab('2048');
+tabBtnTetris.onclick = ()=>showTab('tetris');
+
+
+/* =========================================================
+   SUDOKU
+========================================================= */
+(function(){
+  const DIFFS = [
+    {key:'l1', label:'1', clues:50},
+    {key:'l2', label:'2', clues:46},
+    {key:'l3', label:'3', clues:42},
+    {key:'l4', label:'4', clues:38},
+    {key:'l5', label:'5', clues:34},
+    {key:'l6', label:'6', clues:31},
+    {key:'l7', label:'7', clues:28},
+    {key:'l8', label:'8', clues:25},
+    {key:'l9', label:'9', clues:22}
+  ];
+
+  let difficulty = localStorage.getItem('sudoku_diff') || 'l4';
+  let puzzle = [], solution = [], given = [];
+  let selected = null;
+  let mistakes = 0, maxMistakes = 3;
+  let hintsLeft = 3, maxHints = 3;
+  let seconds = 0, timerId = null;
+  let gameOver = false, won = false;
+
+  const boardEl = document.getElementById('s-board');
+  const boardWrapEl = document.getElementById('s-boardWrap');
+  const numpadEl = document.getElementById('s-numpad');
+  const diffChipsEl = document.getElementById('s-diffChips');
+  const timerValEl = document.getElementById('s-timerVal');
+  const mistakesValEl = document.getElementById('s-mistakesVal');
+  const bestValEl = document.getElementById('s-bestVal');
+  const toastEl = document.getElementById('s-toast');
+  const confirmModal = document.getElementById('s-confirmModal');
+  const confirmText = document.getElementById('s-confirmText');
+  const hintBtn = document.getElementById('s-hintBtn');
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  function isValid(grid,pos,val){
+    const row=Math.floor(pos/9), col=pos%9;
+    for(let i=0;i<9;i++){
+      if(grid[row*9+i]===val) return false;
+      if(grid[i*9+col]===val) return false;
+    }
+    const br=row-row%3, bc=col-col%3;
+    for(let r=0;r<3;r++) for(let c=0;c<3;c++){
+      if(grid[(br+r)*9+(bc+c)]===val) return false;
+    }
+    return true;
+  }
+
+  function fillGrid(grid){
+    const pos = grid.indexOf(0);
+    if(pos===-1) return true;
+    const nums = shuffle([1,2,3,4,5,6,7,8,9]);
+    for(const n of nums){
+      if(isValid(grid,pos,n)){
+        grid[pos]=n;
+        if(fillGrid(grid)) return true;
+        grid[pos]=0;
+      }
+    }
+    return false;
+  }
+
+  function countSolutions(grid, limit){
+    const pos = grid.indexOf(0);
+    if(pos===-1) return 1;
+    let count=0;
+    for(let n=1;n<=9;n++){
+      if(isValid(grid,pos,n)){
+        grid[pos]=n;
+        count += countSolutions(grid, limit-count);
+        grid[pos]=0;
+        if(count>=limit) break;
+      }
+    }
+    return count;
+  }
+
+  function makePuzzle(clueTarget){
+    const full = new Array(81).fill(0);
+    fillGrid(full);
+    const puz = full.slice();
+    const positions = shuffle([...Array(81).keys()]);
+    let clues = 81;
+    for(const pos of positions){
+      if(clues<=clueTarget) break;
+      const backup = puz[pos];
+      puz[pos]=0;
+      const copy = puz.slice();
+      const solCount = countSolutions(copy, 2);
+      if(solCount===1){
+        clues--;
+      } else {
+        puz[pos]=backup;
+      }
+    }
+    return {puzzle:puz, solution:full};
+  }
+
+  function renderDiffChips(){
+    diffChipsEl.innerHTML='';
+    DIFFS.forEach(d=>{
+      const chip=document.createElement('button');
+      chip.className='chip'+(d.key===difficulty?' active':'');
+      chip.textContent=d.label;
+      chip.onclick=()=>{
+        if(d.key===difficulty) return;
+        askConfirm(`Switch to level ${d.label}? Your current progress will be lost.`, ()=>{
+          difficulty=d.key;
+          localStorage.setItem('sudoku_diff', difficulty);
+          startGame();
+        });
+      };
+      diffChipsEl.appendChild(chip);
+    });
+  }
+
+  function renderNumpad(){
+    numpadEl.innerHTML='';
+    for(let n=1;n<=9;n++){
+      const b=document.createElement('button');
+      b.textContent=n;
+      b.onclick=()=>placeNumber(n);
+      numpadEl.appendChild(b);
+    }
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML='';
+    for(let i=0;i<81;i++){
+      const cell=document.createElement('div');
+      cell.className='s-cell';
+      const row=Math.floor(i/9), col=i%9;
+      if(col===2||col===5) cell.classList.add('b-right');
+      if(row===2||row===5) cell.classList.add('b-bottom');
+      cell.dataset.idx=i;
+      cell.onclick=()=>selectCell(i);
+      boardEl.appendChild(cell);
+    }
+  }
+
+  function selectCell(i){
+    if(gameOver) return;
+    selected=i;
+    renderBoard();
+  }
+
+  function placeNumber(n){
+    if(selected===null || gameOver) return;
+    if(given[selected]) return;
+    puzzle[selected]=n;
+    if(n!==solution[selected]){
+      mistakes++;
+      mistakesValEl.textContent=`${mistakes}/${maxMistakes}`;
+      if(mistakes>=maxMistakes){
+        endGame(false);
+      }
+    }
+    renderBoard();
+    checkWin();
+  }
+
+  function eraseCell(){
+    if(selected===null || gameOver) return;
+    if(given[selected]) return;
+    puzzle[selected]=0;
+    renderBoard();
+  }
+
+  function useHint(){
+    if(gameOver || hintsLeft<=0) return;
+    if(selected===null || given[selected] || puzzle[selected]===solution[selected]){
+      showToast('Select an empty or incorrect cell first');
+      return;
+    }
+    puzzle[selected]=solution[selected];
+    hintsLeft--;
+    hintBtn.textContent=`Hint (${hintsLeft})`;
+    if(hintsLeft<=0) hintBtn.disabled=true;
+    renderBoard();
+    checkWin();
+  }
+
+  function renderBoard(){
+    const cells=boardEl.children;
+    const selRow = selected!==null ? Math.floor(selected/9) : -1;
+    const selCol = selected!==null ? selected%9 : -1;
+    const selVal = selected!==null ? puzzle[selected] : 0;
+    for(let i=0;i<81;i++){
+      const cell=cells[i];
+      const row=Math.floor(i/9), col=i%9;
+      const val=puzzle[i];
+      cell.textContent = val===0 ? '' : val;
+      cell.classList.remove('given','user-val','error','selected','peer','same-num');
+      if(given[i]){
+        cell.classList.add('given');
+      } else if(val!==0){
+        cell.classList.add('user-val');
+        if(val!==solution[i]) cell.classList.add('error');
+      }
+      if(selected!==null){
+        const br=row-row%3, bc=col-col%3;
+        const selBr=selRow-selRow%3, selBc=selCol-selCol%3;
+        const isPeer = row===selRow || col===selCol || (br===selBr && bc===selBc);
+        if(isPeer && i!==selected) cell.classList.add('peer');
+        if(selVal!==0 && val===selVal && i!==selected) cell.classList.add('same-num');
+        if(i===selected) cell.classList.add('selected');
+      }
+    }
+  }
+
+  function startTimer(){
+    stopTimer();
+    timerId=setInterval(()=>{
+      seconds++;
+      const m=String(Math.floor(seconds/60)).padStart(2,'0');
+      const s=String(seconds%60).padStart(2,'0');
+      timerValEl.textContent=`${m}:${s}`;
+    },1000);
+  }
+  function stopTimer(){ if(timerId) clearInterval(timerId); timerId=null; }
+
+  function checkWin(){
+    if(puzzle.every((v,i)=>v===solution[i])){
+      endGame(true);
+    }
+  }
+
+  function endGame(isWin){
+    gameOver=true;
+    won=isWin;
+    stopTimer();
+    if(isWin){
+      const key=`sudoku_best_${difficulty}`;
+      const best=localStorage.getItem(key);
+      if(!best || seconds < parseInt(best,10)){
+        localStorage.setItem(key, seconds);
+      }
+      updateBest();
+      showToast(`Solved! Time ${timerValEl.textContent}`);
+    } else {
+      showToast('Out of mistakes — better luck next time');
+    }
+  }
+
+  function updateBest(){
+    const key=`sudoku_best_${difficulty}`;
+    const best=localStorage.getItem(key);
+    if(best){
+      const b=parseInt(best,10);
+      const m=String(Math.floor(b/60)).padStart(2,'0');
+      const s=String(b%60).padStart(2,'0');
+      bestValEl.textContent=`${m}:${s}`;
+    } else {
+      bestValEl.textContent='--:--';
+    }
+  }
+
+  function showToast(msg){
+    toastEl.textContent=msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t=setTimeout(()=>toastEl.classList.remove('show'), 2600);
+  }
+
+  let confirmCallback=null;
+  function askConfirm(text, cb){
+    confirmText.textContent=text;
+    confirmCallback=cb;
+    confirmModal.classList.add('show');
+  }
+  document.getElementById('s-confirmCancel').onclick=()=>{confirmModal.classList.remove('show'); confirmCallback=null;};
+  document.getElementById('s-confirmOk').onclick=()=>{
+    confirmModal.classList.remove('show');
+    if(confirmCallback) confirmCallback();
+    confirmCallback=null;
+  };
+
+  function startGame(){
+    boardWrapEl.innerHTML='<div class="loading">Generating puzzle…</div>';
+    setTimeout(()=>{
+      boardWrapEl.innerHTML='';
+      boardWrapEl.appendChild(boardEl);
+      const target = DIFFS.find(d=>d.key===difficulty).clues;
+      const result = makePuzzle(target);
+      puzzle = result.puzzle.slice();
+      solution = result.solution.slice();
+      given = puzzle.map(v=>v!==0);
+      selected=null;
+      mistakes=0;
+      hintsLeft=maxHints;
+      seconds=0;
+      gameOver=false; won=false;
+      mistakesValEl.textContent=`0/${maxMistakes}`;
+      timerValEl.textContent='00:00';
+      hintBtn.textContent=`Hint (${hintsLeft})`;
+      hintBtn.disabled=false;
+      buildBoard();
+      renderBoard();
+      updateBest();
+      startTimer();
+      renderDiffChips();
+    }, 30);
+  }
+
+  hintBtn.onclick=useHint;
+  document.getElementById('s-eraseBtn').onclick=eraseCell;
+  document.getElementById('s-newGameBtn').onclick=()=>{
+    if(!gameOver){
+      askConfirm('Start a new game? Your current progress will be lost.', startGame);
+    } else {
+      startGame();
+    }
+  };
+
+  renderNumpad();
+  renderDiffChips();
+  startGame();
+
+  // Exposed for tab-switch pause/resume of the timer
+  window.SudokuApp = {
+    pause(){ stopTimer(); },
+    resume(){ if(!gameOver) startTimer(); }
+  };
+})();
+
+
+/* =========================================================
+   2048
+========================================================= */
+(function(){
+  const DIFFS = [
+    {key:'l1', label:'1', size:7, four:0.10, target:2048},
+    {key:'l2', label:'2', size:6, four:0.10, target:2048},
+    {key:'l3', label:'3', size:6, four:0.18, target:2048},
+    {key:'l4', label:'4', size:5, four:0.10, target:2048},
+    {key:'l5', label:'5', size:5, four:0.20, target:2048},
+    {key:'l6', label:'6', size:4, four:0.10, target:2048},
+    {key:'l7', label:'7', size:4, four:0.20, target:2048},
+    {key:'l8', label:'8', size:4, four:0.30, target:2048},
+    {key:'l9', label:'9', size:3, four:0.30, target:512}
+  ];
+
+  let difficulty = localStorage.getItem('2048_diff') || 'l6';
+  let size, four, target;
+  let grid = [];
+  let score = 0;
+  let gameOver = false, hasWon = false, wonToastShown = false;
+
+  const boardEl = document.getElementById('g-board');
+  const diffChipsEl = document.getElementById('g-diffChips');
+  const scoreValEl = document.getElementById('g-scoreVal');
+  const bestValEl = document.getElementById('g-bestVal');
+  const targetValEl = document.getElementById('g-targetVal');
+  const toastEl = document.getElementById('g-toast');
+  const confirmModal = document.getElementById('g-confirmModal');
+  const confirmText = document.getElementById('g-confirmText');
+  const dpadEl = document.getElementById('g-dpad');
+
+  function currentDiff(){ return DIFFS.find(d=>d.key===difficulty); }
+
+  function renderDiffChips(){
+    diffChipsEl.innerHTML='';
+    DIFFS.forEach(d=>{
+      const chip=document.createElement('button');
+      chip.className='chip'+(d.key===difficulty?' active':'');
+      chip.textContent=d.label;
+      chip.onclick=()=>{
+        if(d.key===difficulty) return;
+        askConfirm(`Switch to level ${d.label} (${d.size}×${d.size} board)? Your current progress will be lost.`, ()=>{
+          difficulty=d.key;
+          localStorage.setItem('2048_diff', difficulty);
+          renderDiffChips();
+          startGame();
+        });
+      };
+      diffChipsEl.appendChild(chip);
+    });
+  }
+
+  function emptyCells(){
+    const cells=[];
+    for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(grid[r][c]===0) cells.push([r,c]);
+    return cells;
+  }
+
+  function spawnTile(){
+    const cells=emptyCells();
+    if(cells.length===0) return;
+    const [r,c]=cells[Math.floor(Math.random()*cells.length)];
+    grid[r][c] = Math.random() < four ? 4 : 2;
+  }
+
+  function slideRowLeft(row){
+    const arr = row.filter(v=>v!==0);
+    let gained=0;
+    for(let i=0;i<arr.length-1;i++){
+      if(arr[i]===arr[i+1]){
+        arr[i]*=2;
+        gained+=arr[i];
+        arr[i+1]=0;
+        i++;
+      }
+    }
+    const merged = arr.filter(v=>v!==0);
+    while(merged.length<row.length) merged.push(0);
+    return {row:merged, gained};
+  }
+
+  function transpose(g){
+    const t=[];
+    for(let c=0;c<size;c++){
+      const col=[];
+      for(let r=0;r<size;r++) col.push(g[r][c]);
+      t.push(col);
+    }
+    return t;
+  }
+
+  function gridsEqual(a,b){
+    for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(a[r][c]!==b[r][c]) return false;
+    return true;
+  }
+
+  function move(dir){
+    if(gameOver) return;
+    const before = grid.map(row=>row.slice());
+    let gainedTotal=0;
+    let working;
+
+    if(dir==='left') working = grid.map(row=>row.slice());
+    if(dir==='right') working = grid.map(row=>row.slice().reverse());
+    if(dir==='up') working = transpose(grid);
+    if(dir==='down') working = transpose(grid).map(row=>row.slice().reverse());
+
+    const newRows = working.map(row=>{
+      const res = slideRowLeft(row);
+      gainedTotal += res.gained;
+      return res.row;
+    });
+
+    let result;
+    if(dir==='left') result = newRows;
+    if(dir==='right') result = newRows.map(row=>row.slice().reverse());
+    if(dir==='up') result = transpose(newRows);
+    if(dir==='down') result = transpose(newRows.map(row=>row.slice().reverse()));
+
+    if(gridsEqual(before, result)) return;
+
+    grid = result;
+    score += gainedTotal;
+    scoreValEl.textContent = score;
+    spawnTile();
+    render();
+    checkWin();
+    checkGameOver();
+    saveBest();
+  }
+
+  function canMoveAnywhere(){
+    if(emptyCells().length>0) return true;
+    for(let r=0;r<size;r++){
+      for(let c=0;c<size;c++){
+        const v=grid[r][c];
+        if(c<size-1 && grid[r][c+1]===v) return true;
+        if(r<size-1 && grid[r+1][c]===v) return true;
+      }
+    }
+    return false;
+  }
+
+  function checkWin(){
+    if(hasWon) return;
+    for(let r=0;r<size;r++) for(let c=0;c<size;c++){
+      if(grid[r][c]>=target){
+        hasWon=true;
+        if(!wonToastShown){
+          wonToastShown=true;
+          showToast(`You reached ${target}! Keep going for a higher score.`);
+        }
+      }
+    }
+  }
+
+  function checkGameOver(){
+    if(!canMoveAnywhere()){
+      gameOver=true;
+      askConfirm(`Game over — final score ${score}. Start a new game?`, startGame, true);
+    }
+  }
+
+  function tileStyle(value){
+    if(value===0) return {background:'var(--elevated)', color:'transparent', border:'1.5px dashed #D8D6CC'};
+    if(value>=target) return {background:'var(--rust)', color:'var(--ink)', border:'1.5px solid var(--ink)'};
+    const exp = Math.log2(value);
+    const lightness = Math.max(18, 92 - exp*7);
+    const bg = `hsl(64, 14%, ${lightness}%)`;
+    const color = lightness > 55 ? 'var(--ink)' : '#F2F1EA';
+    return {background:bg, color, border:'1.5px solid var(--ink)'};
+  }
+
+  function fontSizeFor(value){
+    const len = String(value).length;
+    if(len<=2) return 'clamp(14px, 6vw, 26px)';
+    if(len===3) return 'clamp(12px, 5vw, 21px)';
+    return 'clamp(10px, 4vw, 17px)';
+  }
+
+  function render(){
+    boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    boardEl.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+    boardEl.innerHTML='';
+    for(let r=0;r<size;r++){
+      for(let c=0;c<size;c++){
+        const v = grid[r][c];
+        const tile = document.createElement('div');
+        tile.className='g-tile';
+        const st = tileStyle(v);
+        tile.style.background = st.background;
+        tile.style.color = st.color;
+        tile.style.border = st.border;
+        tile.style.fontSize = fontSizeFor(v||2);
+        tile.textContent = v===0 ? '' : v;
+        boardEl.appendChild(tile);
+      }
+    }
+  }
+
+  function showToast(msg){
+    toastEl.textContent=msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t=setTimeout(()=>toastEl.classList.remove('show'), 2800);
+  }
+
+  let confirmCallback=null;
+  function askConfirm(text, cb, hideCancel){
+    confirmText.textContent=text;
+    confirmCallback=cb;
+    document.getElementById('g-confirmCancel').style.display = hideCancel ? 'none' : '';
+    confirmModal.classList.add('show');
+  }
+  document.getElementById('g-confirmCancel').onclick=()=>{confirmModal.classList.remove('show'); confirmCallback=null;};
+  document.getElementById('g-confirmOk').onclick=()=>{
+    confirmModal.classList.remove('show');
+    if(confirmCallback) confirmCallback();
+    confirmCallback=null;
+  };
+
+  function bestKey(){ return `2048_best_${difficulty}`; }
+  function saveBest(){
+    const best = parseInt(localStorage.getItem(bestKey())||'0',10);
+    if(score>best) localStorage.setItem(bestKey(), score);
+    updateBestDisplay();
+  }
+  function updateBestDisplay(){
+    bestValEl.textContent = localStorage.getItem(bestKey()) || '0';
+  }
+
+  function startGame(){
+    const d = currentDiff();
+    size = d.size; four = d.four; target = d.target;
+    targetValEl.textContent = target;
+    grid = Array.from({length:size}, ()=>Array(size).fill(0));
+    score = 0; gameOver=false; hasWon=false; wonToastShown=false;
+    scoreValEl.textContent = 0;
+    spawnTile(); spawnTile();
+    render();
+    updateBestDisplay();
+  }
+
+  document.getElementById('g-newGameBtn').onclick=()=>{
+    if(!gameOver && score>0){
+      askConfirm('Start a new game? Your current progress will be lost.', startGame);
+    } else {
+      startGame();
+    }
+  };
+
+  dpadEl.querySelector('.up').onclick=()=>move('up');
+  dpadEl.querySelector('.down').onclick=()=>move('down');
+  dpadEl.querySelector('.left').onclick=()=>move('left');
+  dpadEl.querySelector('.right').onclick=()=>move('right');
+
+  document.addEventListener('keydown', e=>{
+    if(!tab2048.classList.contains('active')) return;
+    if(e.key==='ArrowUp'){ e.preventDefault(); move('up'); }
+    if(e.key==='ArrowDown'){ e.preventDefault(); move('down'); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); move('left'); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); move('right'); }
+  });
+
+  let touchStartX=0, touchStartY=0;
+  boardEl.addEventListener('touchstart', e=>{
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  boardEl.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const absX = Math.abs(dx), absY = Math.abs(dy);
+    const threshold = 24;
+    if(Math.max(absX,absY) < threshold) return;
+    if(absX>absY){
+      move(dx>0 ? 'right' : 'left');
+    } else {
+      move(dy>0 ? 'down' : 'up');
+    }
+  }, {passive:true});
+
+  renderDiffChips();
+  startGame();
+})();
+
+
+
+/* =========================================================
+   TETRIS
+========================================================= */
+(function(){
+  const COLS = 10, ROWS = 20;
+  const DIFFS = [
+    {key:'l1', label:'1', speed:800},
+    {key:'l2', label:'2', speed:700},
+    {key:'l3', label:'3', speed:600},
+    {key:'l4', label:'4', speed:500},
+    {key:'l5', label:'5', speed:420},
+    {key:'l6', label:'6', speed:350},
+    {key:'l7', label:'7', speed:280},
+    {key:'l8', label:'8', speed:220},
+    {key:'l9', label:'9', speed:160}
+  ];
+
+  // Each piece: array of 4 rotation states, each state is a list of {x,y} cell offsets within a 4x4 box.
+  const SHAPES = {
+    I: {
+      color:'var(--rust)',
+      rot:[
+        [{x:0,y:1},{x:1,y:1},{x:2,y:1},{x:3,y:1}],
+        [{x:2,y:0},{x:2,y:1},{x:2,y:2},{x:2,y:3}],
+        [{x:0,y:1},{x:1,y:1},{x:2,y:1},{x:3,y:1}],
+        [{x:2,y:0},{x:2,y:1},{x:2,y:2},{x:2,y:3}]
+      ]
+    },
+    O: {
+      color:'#E8C468',
+      rot:[
+        [{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}],
+        [{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}],
+        [{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}],
+        [{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}]
+      ]
+    },
+    T: {
+      color:'#B7A0C4',
+      rot:[
+        [{x:1,y:0},{x:0,y:1},{x:1,y:1},{x:2,y:1}],
+        [{x:1,y:0},{x:1,y:1},{x:2,y:1},{x:1,y:2}],
+        [{x:0,y:1},{x:1,y:1},{x:2,y:1},{x:1,y:2}],
+        [{x:1,y:0},{x:0,y:1},{x:1,y:1},{x:1,y:2}]
+      ]
+    },
+    S: {
+      color:'#9CB380',
+      rot:[
+        [{x:1,y:0},{x:2,y:0},{x:0,y:1},{x:1,y:1}],
+        [{x:1,y:0},{x:1,y:1},{x:2,y:1},{x:2,y:2}],
+        [{x:1,y:0},{x:2,y:0},{x:0,y:1},{x:1,y:1}],
+        [{x:1,y:0},{x:1,y:1},{x:2,y:1},{x:2,y:2}]
+      ]
+    },
+    Z: {
+      color:'#D69A9A',
+      rot:[
+        [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:2,y:1}],
+        [{x:2,y:0},{x:1,y:1},{x:2,y:1},{x:1,y:2}],
+        [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:2,y:1}],
+        [{x:2,y:0},{x:1,y:1},{x:2,y:1},{x:1,y:2}]
+      ]
+    },
+    J: {
+      color:'#8FA3B3',
+      rot:[
+        [{x:0,y:0},{x:0,y:1},{x:1,y:1},{x:2,y:1}],
+        [{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:1,y:2}],
+        [{x:0,y:1},{x:1,y:1},{x:2,y:1},{x:2,y:2}],
+        [{x:1,y:0},{x:1,y:1},{x:0,y:2},{x:1,y:2}]
+      ]
+    },
+    L: {
+      color:'#D8A468',
+      rot:[
+        [{x:2,y:0},{x:0,y:1},{x:1,y:1},{x:2,y:1}],
+        [{x:1,y:0},{x:1,y:1},{x:1,y:2},{x:2,y:2}],
+        [{x:0,y:1},{x:1,y:1},{x:2,y:1},{x:0,y:2}],
+        [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:1,y:2}]
+      ]
+    }
+  };
+  const TYPES = Object.keys(SHAPES);
+
+  let difficulty = localStorage.getItem('tetris_diff') || 'l4';
+  let board;             // ROWS x COLS array, 0 = empty, else color string
+  let cur, curType, curRot, curX, curY;
+  let nextType;
+  let score, lines, level, running, tickId, baseSpeed;
+
+  const boardEl = document.getElementById('tt-board');
+  const nextEl = document.getElementById('tt-next');
+  const diffChipsEl = document.getElementById('tt-diffChips');
+  const scoreValEl = document.getElementById('tt-scoreVal');
+  const linesValEl = document.getElementById('tt-linesVal');
+  const bestValEl = document.getElementById('tt-bestVal');
+  const toastEl = document.getElementById('tt-toast');
+  const confirmModal = document.getElementById('tt-confirmModal');
+  const confirmText = document.getElementById('tt-confirmText');
+
+  function currentDiff(){ return DIFFS.find(d=>d.key===difficulty); }
+
+  function renderDiffChips(){
+    diffChipsEl.innerHTML='';
+    DIFFS.forEach(d=>{
+      const chip=document.createElement('button');
+      chip.className='chip'+(d.key===difficulty?' active':'');
+      chip.textContent=d.label;
+      chip.onclick=()=>{
+        if(d.key===difficulty) return;
+        askConfirm(`Switch to level ${d.label}? Your current progress will be lost.`, ()=>{
+          difficulty=d.key;
+          localStorage.setItem('tetris_diff', difficulty);
+          renderDiffChips();
+          startGame();
+        });
+      };
+      diffChipsEl.appendChild(chip);
+    });
+  }
+
+  function buildCells(){
+    boardEl.innerHTML='';
+    for(let i=0;i<COLS*ROWS;i++){
+      const cell=document.createElement('div');
+      cell.className='tt-cell';
+      boardEl.appendChild(cell);
+    }
+    nextEl.innerHTML='';
+    for(let i=0;i<16;i++){
+      const cell=document.createElement('div');
+      cell.className='tt-next-cell';
+      nextEl.appendChild(cell);
+    }
+  }
+
+  function emptyBoard(){
+    return Array.from({length:ROWS}, ()=>Array(COLS).fill(0));
+  }
+
+  function randomType(){ return TYPES[Math.floor(Math.random()*TYPES.length)]; }
+
+  function cellsFor(type, rotation){ return SHAPES[type].rot[rotation]; }
+
+  function collides(type, rotation, x, y){
+    const cells = cellsFor(type, rotation);
+    for(const c of cells){
+      const bx = x + c.x;
+      const by = y + c.y;
+      if(bx<0 || bx>=COLS || by>=ROWS) return true;
+      if(by>=0 && board[by][bx]) return true;
+    }
+    return false;
+  }
+
+  function spawnPiece(){
+    curType = nextType || randomType();
+    nextType = randomType();
+    curRot = 0;
+    curX = 3;
+    curY = 0;
+    renderNext();
+    if(collides(curType, curRot, curX, curY)){
+      running=false;
+      stopTimer();
+      const key=`tetris_best_${difficulty}`;
+      const best=parseInt(localStorage.getItem(key)||'0',10);
+      if(score>best) localStorage.setItem(key, score);
+      updateBest();
+      askConfirm(`Game over — final score ${score}. Start a new game?`, startGame, true);
+    }
+  }
+
+  function tryMove(dx, dy){
+    if(!running) return false;
+    const nx = curX+dx, ny = curY+dy;
+    if(!collides(curType, curRot, nx, ny)){
+      curX = nx; curY = ny;
+      render();
+      return true;
+    }
+    if(dy>0){ lockPiece(); }
+    return false;
+  }
+
+  function tryRotate(){
+    if(!running) return;
+    const newRot = (curRot+1)%4;
+    const kicks = [0,-1,1,-2,2];
+    for(const k of kicks){
+      if(!collides(curType, newRot, curX+k, curY)){
+        curRot = newRot;
+        curX += k;
+        render();
+        return;
+      }
+    }
+  }
+
+  function hardDrop(){
+    if(!running) return;
+    while(!collides(curType, curRot, curX, curY+1)){
+      curY++;
+    }
+    render();
+    lockPiece();
+  }
+
+  function lockPiece(){
+    const cells = cellsFor(curType, curRot);
+    cells.forEach(c=>{
+      const bx = curX+c.x, by = curY+c.y;
+      if(by>=0 && by<ROWS && bx>=0 && bx<COLS){
+        board[by][bx] = SHAPES[curType].color;
+      }
+    });
+    let cleared = 0;
+    for(let r=ROWS-1;r>=0;r--){
+      if(board[r].every(v=>v!==0)){
+        board.splice(r,1);
+        board.unshift(Array(COLS).fill(0));
+        cleared++;
+        r++; // re-check this row index after shift
+      }
+    }
+    if(cleared>0){
+      const points = {1:100, 2:300, 3:500, 4:800}[cleared] || 0;
+      score += points * level;
+      lines += cleared;
+      scoreValEl.textContent = score;
+      linesValEl.textContent = lines;
+      const baseLevel = currentDiff_baseLevel();
+      const newLevel = Math.min(baseLevel + Math.floor(lines/10), 30);
+      if(newLevel !== level){
+        level = newLevel;
+        const stepsAboveBase = level - baseLevel;
+        const factor = Math.pow(0.92, stepsAboveBase);
+        const interval = Math.max(80, Math.round(baseSpeed * factor));
+        startTimer(interval);
+      }
+      showToast(cleared===4 ? 'Tetris! +'+ (points*level) : `${cleared} line${cleared>1?'s':''} cleared`);
+    }
+    spawnPiece();
+    render();
+  }
+
+  function currentDiff_baseLevel(){
+    return DIFFS.findIndex(d=>d.key===difficulty)+1;
+  }
+
+  function ghostY(){
+    let gy = curY;
+    while(!collides(curType, curRot, curX, gy+1)) gy++;
+    return gy;
+  }
+
+  function render(){
+    const cells = boardEl.children;
+    for(let r=0;r<ROWS;r++){
+      for(let c=0;c<COLS;c++){
+        const idx = r*COLS+c;
+        const cell = cells[idx];
+        const bg = board[r][c];
+        if(bg){
+          cell.className='tt-cell filled';
+          cell.style.background = bg;
+        } else {
+          cell.className='tt-cell';
+          cell.style.background = '';
+        }
+      }
+    }
+    if(running){
+      const gy = ghostY();
+      cellsFor(curType, curRot).forEach(c=>{
+        const bx = curX+c.x, by = gy+c.y;
+        if(by>=0 && by<ROWS && bx>=0 && bx<COLS){
+          const cell = cells[by*COLS+bx];
+          if(!cell.classList.contains('filled')) cell.className='tt-cell ghost';
+        }
+      });
+      cellsFor(curType, curRot).forEach(c=>{
+        const bx = curX+c.x, by = curY+c.y;
+        if(by>=0 && by<ROWS && bx>=0 && bx<COLS){
+          const cell = cells[by*COLS+bx];
+          cell.className='tt-cell filled';
+          cell.style.background = SHAPES[curType].color;
+        }
+      });
+    }
+  }
+
+  function renderNext(){
+    const cells = nextEl.children;
+    for(let i=0;i<16;i++){ cells[i].style.background=''; }
+    cellsFor(nextType, 0).forEach(c=>{
+      const idx = c.y*4+c.x;
+      if(cells[idx]) cells[idx].style.background = SHAPES[nextType].color;
+    });
+  }
+
+  function startTimer(intervalOverride){
+    stopTimer();
+    const interval = intervalOverride || baseSpeed;
+    tickId = setInterval(()=>{ tryMove(0,1); }, interval);
+  }
+  function stopTimer(){ if(tickId) clearInterval(tickId); tickId=null; }
+
+  function updateBest(){
+    const key=`tetris_best_${difficulty}`;
+    bestValEl.textContent = localStorage.getItem(key) || '0';
+  }
+
+  function showToast(msg){
+    toastEl.textContent=msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t=setTimeout(()=>toastEl.classList.remove('show'), 2200);
+  }
+
+  let confirmCallback=null;
+  function askConfirm(text, cb, hideCancel){
+    confirmText.textContent=text;
+    confirmCallback=cb;
+    document.getElementById('tt-confirmCancel').style.display = hideCancel ? 'none' : '';
+    confirmModal.classList.add('show');
+  }
+  document.getElementById('tt-confirmCancel').onclick=()=>{confirmModal.classList.remove('show'); confirmCallback=null;};
+  document.getElementById('tt-confirmOk').onclick=()=>{
+    confirmModal.classList.remove('show');
+    if(confirmCallback) confirmCallback();
+    confirmCallback=null;
+  };
+
+  function startGame(){
+    board = emptyBoard();
+    score = 0; lines = 0;
+    level = currentDiff_baseLevel();
+    baseSpeed = currentDiff().speed;
+    running = true;
+    scoreValEl.textContent = 0;
+    linesValEl.textContent = 0;
+    buildCells();
+    nextType = randomType();
+    spawnPiece();
+    render();
+    updateBest();
+    startTimer(baseSpeed);
+  }
+
+  document.getElementById('tt-newGameBtn').onclick=()=>{
+    if(running && score>0){
+      askConfirm('Start a new game? Your current progress will be lost.', startGame);
+    } else {
+      startGame();
+    }
+  };
+
+  document.getElementById('tt-rotateBtn').onclick=()=>tryRotate();
+  document.getElementById('tt-dropBtn').onclick=()=>hardDrop();
+
+  // Left/right/down support tap plus press-and-hold repeat for smoother mobile control
+  function bindRepeat(btn, action){
+    let repeatId=null, delayId=null;
+    const start=(e)=>{
+      e.preventDefault();
+      action();
+      delayId = setTimeout(()=>{
+        repeatId = setInterval(action, 90);
+      }, 220);
+    };
+    const stop=()=>{
+      clearTimeout(delayId); clearInterval(repeatId);
+      delayId=null; repeatId=null;
+    };
+    btn.addEventListener('pointerdown', start);
+    btn.addEventListener('pointerup', stop);
+    btn.addEventListener('pointerleave', stop);
+    btn.addEventListener('pointercancel', stop);
+  }
+  bindRepeat(document.getElementById('tt-leftBtn'), ()=>tryMove(-1,0));
+  bindRepeat(document.getElementById('tt-rightBtn'), ()=>tryMove(1,0));
+  bindRepeat(document.getElementById('tt-downBtn'), ()=>tryMove(0,1));
+
+  document.addEventListener('keydown', e=>{
+    if(!tabTetris.classList.contains('active')) return;
+    if(e.key==='ArrowLeft'){ e.preventDefault(); tryMove(-1,0); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); tryMove(1,0); }
+    if(e.key==='ArrowDown'){ e.preventDefault(); tryMove(0,1); }
+    if(e.key==='ArrowUp'){ e.preventDefault(); tryRotate(); }
+    if(e.key===' '){ e.preventDefault(); hardDrop(); }
+  });
+
+  renderDiffChips();
+  startGame();
+
+  // Exposed for tab-switch pause/resume
+  window.TetrisApp = {
+    pause(){ stopTimer(); },
+    resume(){ if(running) startTimer(); }
+  };
+})();
+</script>
+</body>
+</html>
